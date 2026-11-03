@@ -1,0 +1,15 @@
+{
+  "name": "Youth Soccer Rankings",
+  "short_name": "Rankings",
+  "description": "Youth soccer rankings, match odds, forecasts and live scores kept by parents and coaches.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0F2A47",
+  "theme_color": "#0F2A47",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

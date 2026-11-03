@@ -1,0 +1,1460 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><meta name="theme-color" content="#0F2A47"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Rankings"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"></head><body>
+<title>Youth Soccer Rankings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one phone-width column in a device frame on wide screens, demo notes beside it. Navy app bar, white data surfaces, one pitch-green accent; live red only for games in progress. */
+:root {
+  --bg: #F3F5F8; --surface: #FFFFFF; --surface-2: #F6F8FB; --ink: #0E1B2C; --ink-2: #4F5E72; --ink-3: #7F8DA0; --line: #E2E7EE;
+  --brand: #0F2A47; --brand-ink: #FFFFFF; --brand-soft: #B9C7D8;
+  --accent: #0B7A55; --accent-soft: #E3F2EC; --win: #0B7A55; --draw: #8A97A8; --loss: #C0392B; --warn: #9A6A00; --warn-soft: #FBF2DC;
+  --live: #D6303A; --live-soft: #FCE8E9; --frame: #DCE2EA;
+  --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --body: "Public Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0A1320; --surface: #111D2D; --surface-2: #16243A; --ink: #E8EEF5; --ink-2: #A3B1C2; --ink-3: #74859A; --line: #22344B;
+  --brand: #0C1A2C; --brand-ink: #FFFFFF; --brand-soft: #8EA2BA;
+  --accent: #34B886; --accent-soft: #123528; --win: #34B886; --draw: #6D7E93; --loss: #E5675F; --warn: #E7B53C; --warn-soft: #2E2510;
+  --live: #FF5A63; --live-soft: #3A1418; --frame: #050B14; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0A1320; --surface: #111D2D; --surface-2: #16243A; --ink: #E8EEF5; --ink-2: #A3B1C2; --ink-3: #74859A; --line: #22344B;
+  --brand: #0C1A2C; --brand-ink: #FFFFFF; --brand-soft: #8EA2BA;
+  --accent: #34B886; --accent-soft: #123528; --win: #34B886; --draw: #6D7E93; --loss: #E5675F; --warn: #E7B53C; --warn-soft: #2E2510;
+  --live: #FF5A63; --live-soft: #3A1418; --frame: #050B14; color-scheme: dark }
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { background: var(--frame); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+.stage { display: flex; justify-content: center; align-items: flex-start; gap: 40px; }
+.phone { width: 100%; max-width: 420px; min-height: 100%; background: var(--bg); position: relative; padding-bottom: calc(66px + env(safe-area-inset-bottom, 0px)); }
+.notes { display: none; }
+@media (min-width: 900px) {
+  .stage { padding: 32px 24px; }
+  .phone { min-height: 880px; border-radius: 34px; overflow: hidden; box-shadow: 0 0 0 10px #0B1522, 0 40px 90px rgba(10, 20, 35, .28); }
+  .notes { display: block; max-width: 330px; color: var(--ink-2); font-size: 14px; position: sticky; top: 32px; }
+  .notes h2 { font-family: var(--display); font-weight: 700; font-size: 28px; color: var(--ink); margin: 0 0 8px; line-height: 1.05; }
+  .notes p { margin: 0 0 12px; }
+  .notes ul { margin: 0 0 12px; padding-left: 18px; } .notes li { margin-bottom: 6px; }
+  .notes b { color: var(--ink); }
+}
+.mobile-note { font-size: 12px; color: var(--ink-3); padding: 10px 16px 0; }
+@media (min-width: 900px) { .mobile-note { display: none; } }
+
+.appbar { background: var(--brand); color: var(--brand-ink); padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 10px; display: flex; align-items: center; justify-content: space-between; gap: 12px; position: sticky; top: 0; z-index: 4; min-height: 50px; }
+.wordmark { display: flex; align-items: center; gap: 8px; font-family: var(--display); font-weight: 600; letter-spacing: .01em; white-space: nowrap; text-transform: uppercase; }
+.wm-t { display: flex; flex-direction: column; line-height: 1; }
+.wm-t small { font-size: 11px; font-weight: 700; letter-spacing: .14em; color: var(--brand-soft); }
+.wm-t b { font-size: 21px; font-weight: 800; letter-spacing: .03em; color: #4BE0A0; }
+.wordmark svg { width: 30px; height: 30px; flex: none; }
+.context { font-size: 12px; color: var(--brand-soft); font-weight: 600; white-space: nowrap; border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 4px 10px; }
+.back { display: inline-flex; align-items: center; gap: 4px; color: var(--brand-ink); font-weight: 600; font-size: 15px; }
+.back svg { width: 18px; height: 18px; }
+
+.screen { padding: 16px 16px 24px; display: flex; flex-direction: column; gap: 14px; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+.title { font-family: var(--display); font-weight: 700; font-size: 30px; line-height: 1.05; }
+.section-h { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-top: 4px; }
+.section-h h2 { font-family: var(--display); font-weight: 700; font-size: 20px; }
+.muted { color: var(--ink-2); } .faint { color: var(--ink-3); }
+.sm { font-size: 13px; } .xs { font-size: 12px; }
+.num { font-variant-numeric: tabular-nums; }
+.disp { font-family: var(--display); font-weight: 700; }
+p { margin: 0; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+button:disabled { opacity: .45; cursor: default; }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.link { color: var(--accent); font-weight: 600; font-size: 13px; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.panel-body { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.rows > * + * { border-top: 1px solid var(--line); }
+.row { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.grow { flex: 1; min-width: 0; }
+.ell { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.between { justify-content: space-between; }
+
+.code { flex: none; width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; background: var(--surface-2); border: 1px solid var(--line); font-family: var(--display); font-weight: 700; font-size: 13px; letter-spacing: .03em; color: var(--ink-2); }
+.code.lg { width: 52px; height: 52px; border-radius: 13px; font-size: 18px; }
+.code.on-brand { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.18); color: var(--brand-ink); }
+
+.hero { background: var(--brand); color: var(--brand-ink); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+.hero h2 { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.05; }
+.hero .meta { color: var(--brand-soft); font-size: 13px; }
+.kpis { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid rgba(255,255,255,.14); padding-top: 12px; }
+.kpis > div + div { border-left: 1px solid rgba(255,255,255,.14); padding-left: 12px; }
+.kpi-v { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1; font-variant-numeric: tabular-nums; }
+.kpi-l { font-size: 12px; color: var(--brand-soft); margin-top: 3px; }
+.btn-ghost { border: 1px solid rgba(255,255,255,.35); color: var(--brand-ink); border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+.btn-ghost[aria-pressed="true"] { background: var(--brand-ink); color: var(--brand); border-color: var(--brand-ink); }
+.btn { display: block; width: 100%; text-align: center; padding: 11px 14px; border-radius: 10px; font-weight: 600; font-size: 14px; border: 1px solid var(--line); background: var(--surface); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.danger { color: var(--loss); }
+.btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+.form { display: inline-flex; gap: 3px; }
+.form i { width: 18px; height: 18px; border-radius: 4px; display: grid; place-items: center; font-style: normal; color: #fff; font-weight: 700; font-size: 10px; }
+.W { background: var(--win); } .D { background: var(--draw); } .L { background: var(--loss); }
+
+.match-head { display: flex; justify-content: space-between; gap: 8px; padding: 10px 14px; background: var(--surface-2); border-bottom: 1px solid var(--line); font-size: 12px; color: var(--ink-2); }
+.match-head b { color: var(--ink); font-weight: 600; }
+.side { display: flex; align-items: center; gap: 10px; }
+.side .pct { font-family: var(--display); font-weight: 700; font-size: 22px; font-variant-numeric: tabular-nums; min-width: 48px; text-align: right; }
+.side .pct.fav { color: var(--accent); }
+.tri { display: flex; height: 6px; border-radius: 3px; overflow: hidden; gap: 2px; }
+.tri span:nth-child(1) { background: var(--win); } .tri span:nth-child(2) { background: var(--draw); } .tri span:nth-child(3) { background: var(--loss); }
+.tri-legend { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-2); }
+.chip { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
+.chip.warn { background: var(--warn-soft); color: var(--warn); }
+.chip.ok { background: var(--accent-soft); color: var(--accent); }
+.chip.live { background: var(--live-soft); color: var(--live); }
+.chip.plain { background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line); }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--live); display: inline-block; }
+@media (prefers-reduced-motion: no-preference) { .dot { animation: pulse 1.6s ease-in-out infinite; } @keyframes pulse { 50% { opacity: .3; } } }
+
+.tbl { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.tbl th { font-size: 11px; font-weight: 600; color: var(--ink-3); text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); background: var(--surface-2); }
+.tbl td { padding: 10px 6px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl th:first-child, .tbl td:first-child { padding-left: 14px; }
+.tbl th:last-child, .tbl td:last-child { padding-right: 14px; }
+.tbl .r { text-align: right; }
+.tbl tr.click { cursor: pointer; }
+.tbl tr.click:hover td { background: var(--surface-2); }
+.tbl tr.hl td { background: var(--accent-soft); }
+.rk { font-family: var(--display); font-weight: 700; font-size: 18px; width: 30px; }
+.mv { font-size: 11px; font-weight: 700; display: block; }
+.up { color: var(--win); } .down { color: var(--loss); } .flat { color: var(--ink-3); }
+.score { white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.res { width: 18px; height: 18px; border-radius: 4px; display: inline-grid; place-items: center; color: #fff; font-size: 10px; font-weight: 700; }
+
+.list-item { display: flex; align-items: center; gap: 10px; padding: 11px 14px; width: 100%; }
+.list-item:hover { background: var(--surface-2); }
+.chev { color: var(--ink-3); width: 16px; height: 16px; flex: none; }
+.notice { border: 1px solid var(--line); border-left: 3px solid var(--warn); background: var(--surface); border-radius: 10px; padding: 10px 12px; font-size: 13px; color: var(--ink-2); }
+.notice b { color: var(--ink); }
+.notice.info { border-left-color: var(--accent); }
+.link-flag { color: var(--warn); font-weight: 600; }
+.wx { display: flex; align-items: center; gap: 10px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; text-align: left; }
+.wx svg { width: 30px; height: 30px; flex: none; }
+.wx-main { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.wx-t { font-size: 14px; font-weight: 600; color: var(--ink); }
+.wx-t b { font-family: var(--display); font-size: 18px; font-weight: 700; margin-right: 6px; }
+.wx-s { font-size: 12px; color: var(--ink-2); }
+.wx-pending { font-size: 12px; color: var(--ink-3); display: flex; align-items: center; gap: 6px; }
+.wx-pending svg, .wx-mini svg { width: 16px; height: 16px; flex: none; }
+.wx-mini { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--ink-2); font-weight: 600; }
+
+.seg { display: flex; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 3px; }
+.seg button { flex: 1; text-align: center; padding: 7px 8px; border-radius: 7px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(14,27,44,.14); }
+.filters { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.filters .wide { grid-column: 1 / -1; }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.field label, .field .lbl { font-size: 12px; color: var(--ink-3); font-weight: 600; }
+.field select, .field input { font: inherit; font-weight: 600; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; width: 100%; min-width: 0; }
+.field input[aria-invalid="true"] { border-color: var(--loss); }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.err { color: var(--loss); font-size: 13px; }
+
+.stepper { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.step-col { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; min-width: 0; }
+.step-col .nm { font-size: 12px; color: var(--ink-2); font-weight: 600; text-align: center; max-width: 100%; }
+.step { display: flex; align-items: center; gap: 8px; }
+.step button { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); font-size: 20px; font-weight: 600; display: grid; place-items: center; text-align: center; }
+.step .v { font-family: var(--display); font-weight: 700; font-size: 40px; min-width: 32px; text-align: center; font-variant-numeric: tabular-nums; line-height: 1; }
+.dash { font-family: var(--display); font-weight: 700; font-size: 32px; color: var(--ink-3); padding-top: 18px; }
+.move { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; text-align: center; }
+.move .big { font-family: var(--display); font-weight: 700; font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
+.move .arrow { font-size: 20px; color: var(--ink-3); }
+
+.board { background: var(--brand); color: var(--brand-ink); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.board .teams { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
+.board .t { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; min-width: 0; }
+.board .t span { font-size: 13px; font-weight: 600; max-width: 100%; }
+.board .sc { font-family: var(--display); font-weight: 700; font-size: 54px; line-height: 1; font-variant-numeric: tabular-nums; }
+.board .clock { text-align: center; font-size: 13px; color: var(--brand-soft); display: flex; align-items: center; justify-content: center; gap: 6px; }
+.goal-btn { border-radius: 10px; padding: 12px; font-weight: 700; text-align: center; background: var(--accent); color: #fff; }
+.toast { position: fixed; left: 50%; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 9px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 9; max-width: 340px; text-align: center; }
+
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border-top: 1px solid var(--line); }
+.stat-grid > div { background: var(--surface); padding: 10px 14px; min-width: 0; }
+.stat-v { font-family: var(--display); font-weight: 700; font-size: 22px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.stat-l { font-size: 11px; color: var(--ink-3); }
+.spark { width: 100%; height: 86px; display: block; }
+
+.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; display: flex; justify-content: center; pointer-events: none; }
+.tabs nav { pointer-events: auto; width: 100%; max-width: 420px; display: grid; grid-template-columns: repeat(5, 1fr); background: var(--surface); border-top: 1px solid var(--line); padding: 6px 2px calc(6px + env(safe-area-inset-bottom, 0px)); }
+@media (min-width: 900px) { .tabs { position: absolute; } }
+.tab { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; font-weight: 600; color: var(--ink-3); padding: 4px 0; text-align: center; position: relative; }
+.tab svg { width: 22px; height: 22px; }
+.tab[aria-current="page"] { color: var(--accent); }
+.tab .badge { position: absolute; top: 2px; left: 55%; width: 8px; height: 8px; border-radius: 50%; background: var(--live); }
+
+/* Pro: game stats with video proof, pricing */
+:root { --proof-self: var(--ink-3); --gold: #B07A10; --gold-soft: #FBF2DC; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --gold: #E7B53C; --gold-soft: #2E2510; } }
+:root[data-theme="dark"] { --gold: #E7B53C; --gold-soft: #2E2510; }
+.tabs nav { grid-template-columns: repeat(6, 1fr); }
+.chip.self { background: var(--surface-2); color: var(--ink-3); border: 1px solid var(--line); }
+.chip.clip { background: var(--warn-soft); color: var(--warn); }
+.chip.verified { background: var(--accent-soft); color: var(--accent); }
+.chip.pro-chip { background: var(--gold-soft); color: var(--gold); letter-spacing: .06em; text-transform: uppercase; font-size: 11px; }
+.proof-n { font-weight: 700; color: var(--accent); }
+.boxsc { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px 14px; padding: 12px 14px; align-items: center; }
+.boxsc.hdr { border-bottom: 1px solid var(--line); background: var(--surface-2); padding: 9px 14px; }
+.boxsc .bv { font-family: var(--display); font-weight: 700; font-size: 20px; font-variant-numeric: tabular-nums; }
+.boxsc .bv.r { text-align: right; }
+.boxsc .bl { text-align: center; font-size: 12px; font-weight: 600; color: var(--ink-2); }
+.pbar { height: 8px; border-radius: 4px; background: var(--loss); overflow: hidden; }
+.pbar i { display: block; height: 100%; background: var(--accent); transition: width .25s; }
+.pbp { display: flex; align-items: center; gap: 10px; padding: 10px 14px; flex-wrap: wrap; }
+.pbp .mn { width: 30px; font-variant-numeric: tabular-nums; color: var(--ink-3); font-size: 13px; }
+.pbp-act { width: 100%; display: flex; align-items: center; gap: 14px; padding-left: 74px; }
+.pbp-act .link { font-size: 13px; }
+.mini { font-size: 12px; font-weight: 600; color: var(--ink-2); border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; }
+.mini[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+.statgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.statbtn { padding: 11px 4px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); font-weight: 700; font-size: 13px; text-align: center; color: var(--ink); }
+.statbtn:active, .statbtn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.or { text-align: center; font-size: 12px; color: var(--ink-3); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; padding-top: 4px; }
+.locked { position: relative; }
+.locked .tbl, .locked .boxsc { filter: blur(5px); opacity: .55; user-select: none; }
+.lock { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 10px; padding: 16px; background: color-mix(in srgb, var(--surface) 55%, transparent); text-align: center; font-size: 13px; color: var(--ink-2); }
+.lock b { color: var(--ink); }
+.panel.locked .boxsc { min-height: 170px; }
+.founder { background: var(--brand); color: var(--brand-ink); border-radius: 14px; padding: 18px 16px; display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden; }
+.founder::after { content: ""; position: absolute; right: -40px; top: -40px; width: 160px; height: 160px; border-radius: 50%; border: 18px solid rgba(75,224,160,.12); }
+.f-k { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--brand-soft); }
+.f-h { font-family: var(--display); font-weight: 700; font-size: 30px; line-height: 1.02; color: #4BE0A0; text-transform: uppercase; max-width: 15ch; }
+.f-p { font-size: 13px; color: var(--brand-soft); }
+.f-m { height: 8px; border-radius: 4px; background: rgba(255,255,255,.15); overflow: hidden; }
+.f-m i { display: block; height: 100%; background: #4BE0A0; min-width: 4px; }
+.f-c { font-size: 12px; font-weight: 700; color: #4BE0A0; }
+.f-btn { background: #4BE0A0; border-color: #4BE0A0; color: #0F2A47; font-weight: 700; }
+.plan { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.plan.best { border: 2px solid var(--accent); }
+.price { font-family: var(--display); font-weight: 700; font-size: 40px; line-height: 1; font-variant-numeric: tabular-nums; }
+.price small { font-family: var(--body); font-size: 14px; font-weight: 600; color: var(--ink-2); }
+.code-box { display: flex; flex-direction: column; gap: 2px; background: var(--surface-2); border: 1px dashed var(--line); border-radius: 10px; padding: 10px 12px; }
+.code-box b { font-family: var(--display); font-size: 28px; letter-spacing: .14em; }
+ul.ticks { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; font-size: 14px; }
+ul.ticks li { padding-left: 22px; position: relative; }
+ul.ticks li::before { content: ""; position: absolute; left: 2px; top: 6px; width: 10px; height: 5px; border-left: 2px solid var(--accent); border-bottom: 2px solid var(--accent); transform: rotate(-45deg); }
+.res-stats { display: block; font-size: 11px; font-weight: 700; color: var(--accent); margin-top: 2px; }
+</style>
+
+<div class="stage">
+  <div class="phone">
+    <header class="appbar" id="appbar"></header>
+    <p class="mobile-note" id="mobile-note"></p>
+    <main id="app" aria-live="polite"></main>
+    <div class="tabs"><nav aria-label="Main">
+      <button class="tab" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.5 5.2 5.7.7-4.2 3.9 1.1 5.6L12 16.2l-5.1 2.7 1.1-5.6-4.2-3.9 5.7-.7z"/></svg>Following</button>
+      <button class="tab" data-tab="rankings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 20V12h4v8zm6 0V5h4v15zm6 0v-5h4v5z"/></svg>Rankings</button>
+      <button class="tab" data-tab="forecast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 3 8-8M15 7h5v5"/></svg>Forecast</button>
+      <button class="tab" data-tab="live"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M6.3 6.3a8 8 0 000 11.4M17.7 6.3a8 8 0 010 11.4"/></svg>Live<span class="badge" id="live-badge" hidden></span></button>
+      <button class="tab" data-tab="players"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.2-3.6 3.9-5.5 7-5.5s5.8 1.9 7 5.5"/></svg>Players</button>
+    <button class="tab" data-tab="pro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></svg>Pro</button>
+    </nav></div>
+  </div>
+  <aside class="notes" id="notes"></aside>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="config.js"></script>
+<script src="backend.js"></script>
+<script id="data" type="application/json">{"asOf": "2026-10-08", "season": "2026–27", "resultsThrough": "2026-10-04", "resultsFrom": "2026-08-09", "counts": {"games": 55, "fixtures": 34, "teams": 59, "focus": 13, "duplicatesRemoved": 13, "conflicts": 0}, "model": {"mu": 1.644, "att": {"beach-fc-south-bay-souza": 1.857, "legends-fc": 0.926, "lafc-so-cal-gold": 0.938, "legends-fc-gold": 0.806, "legends-fc-santa-clarita-valley": 1.199, "san-diego-surf-sc-del-mar-hoyos": 1.758, "city-sc-carlsbad-pre-academy-hunt": 0.886, "cda-slammers-hb-pre-elite-crowley": 0.666, "beach-fc-south-bay-ortega": 0.884, "so-cal-blues-lime": 1.11, "sporting-california-usa-pre-ecnl-lopez": 0.686, "socal-reds-fc-pre-ga-gh": 2.476, "sporting-california-usa-pre-ecnl-roman": 0.958, "pateadores-sc-predpl": 0.782, "fram-sc-pre-academy": 1.651, "los-angeles-sc-black": 0.959, "so-cal-blues-blue-u11g": 0.96, "slammers-hb-koge-fc-pre-ecnl": 1.239, "rebels-sc-pre-ecnl": 0.469, "so-cal-blues-blue": 0.728, "lafc-so-cal-ecnl-rl-u13g": 0.99, "utah-royals-fc-az-pre-ecnl": 0.693, "city-sc-southwest-mur-pre-ga": 1.858, "la-breakers-fc-pre-ecnl-1": 1.228, "sporting-california-usa-south-bay-pre-ecnl-robinson": 0.777, "encinitas-express-soccer-elite-henry": 0.781, "sdsc-surf-pre-ga": 0.786, "slammers-fc-pre-ecnl": 1.574, "slammers-fc-jb-maroon": 1.035, "slammers-fc-jb-white": 0.802, "beach-fc-long-i-ayala": 1.034, "so-cal-blues-teal": 0.81, "tudela-fc-los-angeles-la-white": 1.033, "lazers-sc-red-u13g": 1.24, "cda-slammers-noc-fortes-u13g": 0.822, "rangers-fc-south-aspire-u13g": 0.822, "cda-slammers-long-beach-bermudez-u13g": 1.031, "fc-premier-dplo-u13g": 0.829, "san-diego-surf-sc-del-mar-kim": 1.498, "city-sc-carlsbad-pre-academy-ii-loyola": 1.003, "eagles-sc": 0.777, "legends-fc-black": 0.786, "legends-fc-del-mar": 1.003, "central-valley-fa-academy": 1.996, "valley-surf-america-black": 0.722, "merced-united-fc": 0.939, "south-valley-united-sc-black": 0.939, "mountain-view-los-altos-east-blue": 1.148, "san-juan-sc-pre-ecnl": 1.547, "elk-grove-soccer-platinum-1": 1.007, "san-juan-south-sc-elite-u13g": 0.775, "sacramento-united-sc-pre-ga": 0.784}, "def": {"beach-fc-south-bay-souza": 0.509, "legends-fc": 0.992, "lafc-so-cal-gold": 0.628, "legends-fc-gold": 0.69, "legends-fc-santa-clarita-valley": 1.408, "san-diego-surf-sc-del-mar-hoyos": 0.535, "city-sc-carlsbad-pre-academy-hunt": 1.467, "cda-slammers-hb-pre-elite-crowley": 1.462, "beach-fc-south-bay-ortega": 1.4, "so-cal-blues-lime": 0.413, "sporting-california-usa-pre-ecnl-lopez": 1.236, "socal-reds-fc-pre-ga-gh": 1.352, "sporting-california-usa-pre-ecnl-roman": 1.527, "pateadores-sc-predpl": 1.259, "fram-sc-pre-academy": 1.124, "los-angeles-sc-black": 1.513, "so-cal-blues-blue-u11g": 1.122, "slammers-hb-koge-fc-pre-ecnl": 0.817, "rebels-sc-pre-ecnl": 0.563, "so-cal-blues-blue": 0.996, "lafc-so-cal-ecnl-rl-u13g": 1.276, "utah-royals-fc-az-pre-ecnl": 1.668, "city-sc-southwest-mur-pre-ga": 0.594, "la-breakers-fc-pre-ecnl-1": 1.612, "sporting-california-usa-south-bay-pre-ecnl-robinson": 1.148, "encinitas-express-soccer-elite-henry": 1.45, "sdsc-surf-pre-ga": 0.694, "slammers-fc-pre-ecnl": 0.508, "slammers-fc-jb-maroon": 0.905, "slammers-fc-jb-white": 1.57, "beach-fc-long-i-ayala": 1.07, "so-cal-blues-teal": 0.585, "tudela-fc-los-angeles-la-white": 0.747, "lazers-sc-red-u13g": 1.066, "cda-slammers-noc-fortes-u13g": 0.758, "rangers-fc-south-aspire-u13g": 1.22, "cda-slammers-long-beach-bermudez-u13g": 1.373, "fc-premier-dplo-u13g": 1.362, "san-diego-surf-sc-del-mar-kim": 0.591, "city-sc-carlsbad-pre-academy-ii-loyola": 1.434, "eagles-sc": 0.924, "legends-fc-black": 0.926, "legends-fc-del-mar": 1.252, "central-valley-fa-academy": 0.774, "valley-surf-america-black": 1.414, "merced-united-fc": 1.558, "south-valley-united-sc-black": 1.407, "mountain-view-los-altos-east-blue": 0.666, "san-juan-sc-pre-ecnl": 0.582, "elk-grove-soccer-platinum-1": 1.762, "san-juan-south-sc-elite-u13g": 0.74, "sacramento-united-sc-pre-ga": 1.078}}, "ranked": ["beach-fc-south-bay-souza", "san-diego-surf-sc-del-mar-hoyos", "so-cal-blues-lime", "slammers-hb-koge-fc-pre-ecnl", "lafc-so-cal-gold", "legends-fc", "rebels-sc-pre-ecnl", "city-sc-carlsbad-pre-academy-hunt", "cda-slammers-hb-pre-elite-crowley"], "unranked": ["socal-reds-fc-pre-ga-gh", "city-sc-southwest-mur-pre-ga", "slammers-fc-pre-ecnl", "san-diego-surf-sc-del-mar-kim", "central-valley-fa-academy", "san-juan-sc-pre-ecnl"], "events": {"SFL": {"name": "SOCAL Fall League 2026–27", "kind": "league"}, "BCLD": {"name": "Blues Cup Labor Day 2026", "kind": "tournament"}, "VCF": {"name": "VC Fusion Summer Classic 2026", "kind": "tournament"}, "TOC": {"name": "Toyota of Orange Classic 2026", "kind": "tournament"}, "WCFC": {"name": "West Coast Futbol Classic 2026", "kind": "tournament"}, "NCPL": {"name": "NorCal Premier Fall League 2026–27", "kind": "league"}, "NCSC": {"name": "NorCal State Cup 2026–27", "kind": "cup"}, "ECSD": {"name": "ECNL Girls San Diego 2026", "kind": "showcase"}}, "teams": {"beach-fc-south-bay-souza": {"id": "beach-fc-south-bay-souza", "name": "Beach FC South Bay Souza", "code": "BEA", "age": "U12", "state": "CA", "focus": true, "rank": 1, "comparable": true, "rating": {"power": 2.215, "attack": 3.052, "defense": 0.837, "games": 5, "confidence": 0.439, "record": {"w": 4, "d": 0, "l": 1, "gf": 16, "ga": 3}, "form": ["W", "W", "W", "W", "L"], "sos": 0.452}, "history": [{"date": "2026-09-15", "rank": 4, "power": 0.622}, {"date": "2026-09-22", "rank": 5, "power": 0.842}, {"date": "2026-09-29", "rank": 1, "power": 2.25}, {"date": "2026-10-06", "rank": 1, "power": 2.222}, {"date": "2026-10-08", "rank": 1, "power": 2.215}]}, "san-diego-surf-sc-del-mar-hoyos": {"id": "san-diego-surf-sc-del-mar-hoyos", "name": "San Diego Surf SC Del Mar Hoyos", "code": "SDS", "age": "U12", "state": "CA", "focus": true, "rank": 2, "comparable": true, "rating": {"power": 2.01, "attack": 2.89, "defense": 0.88, "games": 6, "confidence": 0.493, "record": {"w": 4, "d": 1, "l": 1, "gf": 24, "ga": 4}, "form": ["W", "W", "W", "L", "W"], "sos": 0.233}, "history": [{"date": "2026-09-08", "rank": 3, "power": 0.309}, {"date": "2026-09-15", "rank": 5, "power": 0.246}, {"date": "2026-09-22", "rank": 2, "power": 0.984}, {"date": "2026-09-29", "rank": 2, "power": 2.034}, {"date": "2026-10-06", "rank": 2, "power": 2.014}, {"date": "2026-10-08", "rank": 2, "power": 2.01}]}, "so-cal-blues-lime": {"id": "so-cal-blues-lime", "name": "So Cal Blues Lime", "code": "BLU", "age": "U12", "state": "CA", "focus": true, "rank": 3, "comparable": true, "rating": {"power": 1.147, "attack": 1.825, "defense": 0.678, "games": 5, "confidence": 0.455, "record": {"w": 4, "d": 1, "l": 0, "gf": 9, "ga": 2}, "form": ["W", "W", "W", "D", "W"], "sos": 0.432}, "history": [{"date": "2026-09-08", "rank": 2, "power": 0.508}, {"date": "2026-09-15", "rank": 3, "power": 0.688}, {"date": "2026-09-22", "rank": 3, "power": 0.888}, {"date": "2026-09-29", "rank": 3, "power": 1.16}, {"date": "2026-10-06", "rank": 3, "power": 1.149}, {"date": "2026-10-08", "rank": 3, "power": 1.147}]}, "socal-reds-fc-pre-ga-gh": {"id": "socal-reds-fc-pre-ga-gh", "name": "SoCal Reds FC Pre GA GH", "code": "RED", "age": "U12", "state": "CA", "focus": true, "rank": null, "comparable": false, "rating": {"power": 1.847, "attack": 4.071, "defense": 2.223, "games": 5, "confidence": 0.314, "record": {"w": 4, "d": 0, "l": 1, "gf": 33, "ga": 13}, "form": ["W", "W", "L", "W", "W"], "sos": -0.406}, "history": []}, "slammers-hb-koge-fc-pre-ecnl": {"id": "slammers-hb-koge-fc-pre-ecnl", "name": "Slammers HB Køge FC Pre ECNL", "code": "SLM", "age": "U12", "state": "CA", "focus": true, "rank": 4, "comparable": true, "rating": {"power": 0.693, "attack": 2.037, "defense": 1.344, "games": 4, "confidence": 0.339, "record": {"w": 3, "d": 1, "l": 0, "gf": 10, "ga": 3}, "form": ["D", "W", "W", "W"], "sos": -0.715}, "history": [{"date": "2026-09-22", "rank": 6, "power": 0.72}, {"date": "2026-09-29", "rank": 4, "power": 0.699}, {"date": "2026-10-06", "rank": 4, "power": 0.694}, {"date": "2026-10-08", "rank": 4, "power": 0.693}]}, "lafc-so-cal-gold": {"id": "lafc-so-cal-gold", "name": "LAFC So Cal Gold", "code": "LAF", "age": "U12", "state": "CA", "focus": true, "rank": 5, "comparable": true, "rating": {"power": 0.509, "attack": 1.542, "defense": 1.033, "games": 5, "confidence": 0.402, "record": {"w": 3, "d": 1, "l": 1, "gf": 8, "ga": 4}, "form": ["D", "L", "W", "W", "W"], "sos": -0.012}, "history": [{"date": "2026-09-15", "rank": 2, "power": 0.757}, {"date": "2026-09-22", "rank": 1, "power": 0.985}, {"date": "2026-09-29", "rank": 5, "power": 0.518}, {"date": "2026-10-06", "rank": 5, "power": 0.511}, {"date": "2026-10-08", "rank": 5, "power": 0.509}]}, "legends-fc": {"id": "legends-fc", "name": "Legends FC", "code": "LEG", "age": "U12", "state": "CA", "focus": true, "rank": 6, "comparable": true, "rating": {"power": -0.109, "attack": 1.523, "defense": 1.631, "games": 5, "confidence": 0.429, "record": {"w": 2, "d": 1, "l": 2, "gf": 7, "ga": 8}, "form": ["L", "D", "W", "L", "W"], "sos": 0.13}, "history": [{"date": "2026-09-08", "rank": 1, "power": 0.761}, {"date": "2026-09-15", "rank": 1, "power": 0.778}, {"date": "2026-09-22", "rank": 4, "power": 0.885}, {"date": "2026-09-29", "rank": 6, "power": -0.107}, {"date": "2026-10-06", "rank": 6, "power": -0.109}, {"date": "2026-10-08", "rank": 6, "power": -0.109}]}, "city-sc-southwest-mur-pre-ga": {"id": "city-sc-southwest-mur-pre-ga", "name": "City SC Southwest Mur Pre GA", "code": "CTY", "age": "U12", "state": "CA", "focus": true, "rank": null, "comparable": false, "rating": {"power": 2.079, "attack": 3.055, "defense": 0.976, "games": 4, "confidence": 0.271, "record": {"w": 4, "d": 0, "l": 0, "gf": 18, "ga": 2}, "form": ["W", "W", "W", "W"], "sos": -0.547}, "history": []}, "slammers-fc-pre-ecnl": {"id": "slammers-fc-pre-ecnl", "name": "Slammers FC Pre ECNL", "code": "SLM", "age": "U12", "state": "CA", "focus": true, "rank": null, "comparable": false, "rating": {"power": 1.751, "attack": 2.587, "defense": 0.836, "games": 10, "confidence": 0.449, "record": {"w": 8, "d": 2, "l": 0, "gf": 31, "ga": 6}, "form": ["W", "W", "W", "D", "D"], "sos": -0.197}, "history": []}, "rebels-sc-pre-ecnl": {"id": "rebels-sc-pre-ecnl", "name": "Rebels SC Pre ECNL", "code": "REB", "age": "U12", "state": "CA", "focus": true, "rank": 7, "comparable": true, "rating": {"power": -0.156, "attack": 0.77, "defense": 0.926, "games": 4, "confidence": 0.387, "record": {"w": 1, "d": 2, "l": 1, "gf": 1, "ga": 2}, "form": ["D", "D", "L", "W"], "sos": 0.047}, "history": [{"date": "2026-09-22", "rank": 7, "power": -0.165}, {"date": "2026-09-29", "rank": 7, "power": -0.158}, {"date": "2026-10-06", "rank": 7, "power": -0.156}, {"date": "2026-10-08", "rank": 7, "power": -0.156}]}, "san-diego-surf-sc-del-mar-kim": {"id": "san-diego-surf-sc-del-mar-kim", "name": "San Diego Surf SC Del Mar Kim", "code": "SDS", "age": "U12", "state": "CA", "focus": true, "rank": null, "comparable": false, "rating": {"power": 1.491, "attack": 2.463, "defense": 0.972, "games": 4, "confidence": 0.269, "record": {"w": 4, "d": 0, "l": 0, "gf": 13, "ga": 2}, "form": ["W", "W", "W", "W"], "sos": -0.397}, "history": []}, "central-valley-fa-academy": {"id": "central-valley-fa-academy", "name": "Central Valley FA Academy", "code": "CVF", "age": "U12", "state": "CA", "focus": true, "rank": null, "comparable": false, "rating": {"power": 2.009, "attack": 3.281, "defense": 1.272, "games": 4, "confidence": 0.275, "record": {"w": 3, "d": 0, "l": 1, "gf": 20, "ga": 4}, "form": ["W", "W", "W", "L"], "sos": -0.533}, "history": []}, "san-juan-sc-pre-ecnl": {"id": "san-juan-sc-pre-ecnl", "name": "San Juan SC Pre ECNL", "code": "SJN", "age": "U12", "state": "CA", "focus": true, "rank": null, "comparable": false, "rating": {"power": 1.586, "attack": 2.543, "defense": 0.957, "games": 3, "confidence": 0.223, "record": {"w": 3, "d": 0, "l": 0, "gf": 11, "ga": 1}, "form": ["W", "W", "W"], "sos": -0.555}, "history": []}, "legends-fc-gold": {"id": "legends-fc-gold", "name": "Legends FC Gold", "code": "LEG", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": true, "rating": {"power": 0.19, "attack": 1.325, "defense": 1.134, "games": 1, "confidence": 0.132, "record": {"w": 0, "d": 0, "l": 1, "gf": 0, "ga": 1}, "form": ["L"], "sos": 2.215}, "history": []}, "legends-fc-santa-clarita-valley": {"id": "legends-fc-santa-clarita-valley", "name": "Legends FC Santa Clarita Valley", "code": "LEG", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": true, "rating": {"power": -0.343, "attack": 1.972, "defense": 2.315, "games": 2, "confidence": 0.245, "record": {"w": 0, "d": 1, "l": 1, "gf": 3, "ga": 8}, "form": ["D", "L"], "sos": 1.362}, "history": []}, "city-sc-carlsbad-pre-academy-hunt": {"id": "city-sc-carlsbad-pre-academy-hunt", "name": "City SC Carlsbad Pre Academy Hunt", "code": "CAR", "age": "U12", "state": "CA", "focus": false, "rank": 8, "comparable": true, "rating": {"power": -0.955, "attack": 1.456, "defense": 2.411, "games": 3, "confidence": 0.346, "record": {"w": 0, "d": 0, "l": 3, "gf": 3, "ga": 11}, "form": ["L", "L", "L"], "sos": 0.865}, "history": [{"date": "2026-09-29", "rank": 8, "power": -0.958}, {"date": "2026-10-06", "rank": 8, "power": -0.956}, {"date": "2026-10-08", "rank": 8, "power": -0.955}]}, "cda-slammers-hb-pre-elite-crowley": {"id": "cda-slammers-hb-pre-elite-crowley", "name": "CDA Slammers HB Pre Elite Crowley", "code": "SLA", "age": "U12", "state": "CA", "focus": false, "rank": 9, "comparable": true, "rating": {"power": -1.308, "attack": 1.095, "defense": 2.403, "games": 3, "confidence": 0.341, "record": {"w": 0, "d": 0, "l": 3, "gf": 1, "ga": 16}, "form": ["L", "L", "L"], "sos": 1.071}, "history": [{"date": "2026-09-22", "rank": 8, "power": -0.602}, {"date": "2026-09-29", "rank": 9, "power": -1.316}, {"date": "2026-10-06", "rank": 9, "power": -1.31}, {"date": "2026-10-08", "rank": 9, "power": -1.308}]}, "beach-fc-south-bay-ortega": {"id": "beach-fc-south-bay-ortega", "name": "Beach FC South Bay Ortega", "code": "BEA", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": true, "rating": {"power": -0.848, "attack": 1.453, "defense": 2.301, "games": 2, "confidence": 0.259, "record": {"w": 0, "d": 0, "l": 2, "gf": 1, "ga": 8}, "form": ["L", "L"], "sos": 1.579}, "history": []}, "sporting-california-usa-pre-ecnl-lopez": {"id": "sporting-california-usa-pre-ecnl-lopez", "name": "Sporting California USA Pre ECNL Lopez", "code": "SPO", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": true, "rating": {"power": -0.903, "attack": 1.128, "defense": 2.031, "games": 2, "confidence": 0.233, "record": {"w": 0, "d": 0, "l": 2, "gf": 0, "ga": 4}, "form": ["L", "L"], "sos": 0.496}, "history": []}, "sporting-california-usa-pre-ecnl-roman": {"id": "sporting-california-usa-pre-ecnl-roman", "name": "Sporting California USA Pre ECNL Roman", "code": "SPO", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -0.935, "attack": 1.575, "defense": 2.51, "games": 1, "confidence": 0.135, "record": {"w": 0, "d": 0, "l": 1, "gf": 2, "ga": 9}, "form": ["L"], "sos": 1.847}, "history": []}, "pateadores-sc-predpl": {"id": "pateadores-sc-predpl", "name": "Pateadores SC Pre-DPL", "code": "PAT", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -0.784, "attack": 1.286, "defense": 2.07, "games": 1, "confidence": 0.135, "record": {"w": 0, "d": 0, "l": 1, "gf": 1, "ga": 6}, "form": ["L"], "sos": 1.847}, "history": []}, "fram-sc-pre-academy": {"id": "fram-sc-pre-academy", "name": "Fram SC Pre Academy", "code": "FRA", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": 0.866, "attack": 2.715, "defense": 1.848, "games": 1, "confidence": 0.132, "record": {"w": 1, "d": 0, "l": 0, "gf": 6, "ga": 5}, "form": ["W"], "sos": 1.847}, "history": []}, "los-angeles-sc-black": {"id": "los-angeles-sc-black", "name": "Los Angeles SC Black", "code": "SC ", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -0.91, "attack": 1.577, "defense": 2.487, "games": 1, "confidence": 0.128, "record": {"w": 0, "d": 0, "l": 1, "gf": 2, "ga": 8}, "form": ["L"], "sos": 1.847}, "history": []}, "so-cal-blues-blue-u11g": {"id": "so-cal-blues-blue-u11g", "name": "So Cal Blues Blue U11G", "code": "BLU", "age": "U11", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -0.266, "attack": 1.578, "defense": 1.844, "games": 1, "confidence": 0.126, "record": {"w": 0, "d": 0, "l": 1, "gf": 2, "ga": 5}, "form": ["L"], "sos": 1.847}, "history": []}, "so-cal-blues-blue": {"id": "so-cal-blues-blue", "name": "So Cal Blues Blue", "code": "BLU", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": true, "rating": {"power": -0.441, "attack": 1.196, "defense": 1.638, "games": 1, "confidence": 0.117, "record": {"w": 0, "d": 0, "l": 1, "gf": 0, "ga": 2}, "form": ["L"], "sos": 0.693}, "history": []}, "lafc-so-cal-ecnl-rl-u13g": {"id": "lafc-so-cal-ecnl-rl-u13g", "name": "LAFC So Cal ECNL RL U13G", "code": "LAF", "age": "U13", "state": "CA", "focus": false, "rank": null, "comparable": true, "rating": {"power": -0.47, "attack": 1.627, "defense": 2.097, "games": 1, "confidence": 0.122, "record": {"w": 0, "d": 0, "l": 1, "gf": 1, "ga": 3}, "form": ["L"], "sos": 0.509}, "history": []}, "utah-royals-fc-az-pre-ecnl": {"id": "utah-royals-fc-az-pre-ecnl", "name": "Utah Royals FC AZ Pre ECNL", "code": "UTA", "age": "U12", "state": "AZ", "focus": false, "rank": null, "comparable": true, "rating": {"power": -1.603, "attack": 1.139, "defense": 2.742, "games": 1, "confidence": 0.126, "record": {"w": 0, "d": 0, "l": 1, "gf": 0, "ga": 5}, "form": ["L"], "sos": -0.109}, "history": []}, "la-breakers-fc-pre-ecnl-1": {"id": "la-breakers-fc-pre-ecnl-1", "name": "LA Breakers FC Pre ECNL 1", "code": "LA ", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -0.63, "attack": 2.019, "defense": 2.65, "games": 1, "confidence": 0.123, "record": {"w": 0, "d": 0, "l": 1, "gf": 2, "ga": 7}, "form": ["L"], "sos": 2.079}, "history": []}, "sporting-california-usa-south-bay-pre-ecnl-robinson": {"id": "sporting-california-usa-south-bay-pre-ecnl-robinson", "name": "Sporting California USA South Bay Pre ECNL Robinson", "code": "SPO", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -0.61, "attack": 1.277, "defense": 1.887, "games": 1, "confidence": 0.123, "record": {"w": 0, "d": 0, "l": 1, "gf": 0, "ga": 4}, "form": ["L"], "sos": 2.079}, "history": []}, "encinitas-express-soccer-elite-henry": {"id": "encinitas-express-soccer-elite-henry", "name": "Encinitas Express Soccer Elite Henry", "code": "ENC", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -1.099, "attack": 1.284, "defense": 2.384, "games": 1, "confidence": 0.12, "record": {"w": 0, "d": 0, "l": 1, "gf": 0, "ga": 6}, "form": ["L"], "sos": 2.079}, "history": []}, "sdsc-surf-pre-ga": {"id": "sdsc-surf-pre-ga", "name": "SDSC Surf Pre GA", "code": "SDS", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": 0.15, "attack": 1.292, "defense": 1.141, "games": 1, "confidence": 0.117, "record": {"w": 0, "d": 0, "l": 1, "gf": 0, "ga": 1}, "form": ["L"], "sos": 2.079}, "history": []}, "slammers-fc-jb-maroon": {"id": "slammers-fc-jb-maroon", "name": "Slammers FC JB Maroon", "code": "SLA", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": 0.214, "attack": 1.701, "defense": 1.487, "games": 1, "confidence": 0.148, "record": {"w": 0, "d": 0, "l": 1, "gf": 1, "ga": 2}, "form": ["L"], "sos": 1.751}, "history": []}, "slammers-fc-jb-white": {"id": "slammers-fc-jb-white", "name": "Slammers FC JB White", "code": "SLA", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -1.262, "attack": 1.318, "defense": 2.58, "games": 1, "confidence": 0.147, "record": {"w": 0, "d": 0, "l": 1, "gf": 0, "ga": 7}, "form": ["L"], "sos": 1.751}, "history": []}, "beach-fc-long-i-ayala": {"id": "beach-fc-long-i-ayala", "name": "Beach FC Long I Ayala", "code": "BEA", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -0.059, "attack": 1.7, "defense": 1.759, "games": 1, "confidence": 0.144, "record": {"w": 0, "d": 0, "l": 1, "gf": 1, "ga": 3}, "form": ["L"], "sos": 1.751}, "history": []}, "so-cal-blues-teal": {"id": "so-cal-blues-teal", "name": "So Cal Blues Teal", "code": "BLU", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": 0.37, "attack": 1.331, "defense": 0.961, "games": 1, "confidence": 0.14, "record": {"w": 0, "d": 1, "l": 0, "gf": 0, "ga": 0}, "form": ["D"], "sos": 1.751}, "history": []}, "tudela-fc-los-angeles-la-white": {"id": "tudela-fc-los-angeles-la-white", "name": "Tudela FC Los Angeles LA White", "code": "TUD", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": 0.471, "attack": 1.698, "defense": 1.228, "games": 1, "confidence": 0.14, "record": {"w": 0, "d": 1, "l": 0, "gf": 1, "ga": 1}, "form": ["D"], "sos": 1.751}, "history": []}, "lazers-sc-red-u13g": {"id": "lazers-sc-red-u13g", "name": "Lazers SC Red U13G", "code": "LAZ", "age": "U13", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": 0.286, "attack": 2.039, "defense": 1.753, "games": 1, "confidence": 0.13, "record": {"w": 0, "d": 0, "l": 1, "gf": 2, "ga": 3}, "form": ["L"], "sos": 1.751}, "history": []}, "cda-slammers-noc-fortes-u13g": {"id": "cda-slammers-noc-fortes-u13g", "name": "CDA Slammers NOC Fortes U13G", "code": "SLA", "age": "U13", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": 0.104, "attack": 1.351, "defense": 1.246, "games": 1, "confidence": 0.13, "record": {"w": 0, "d": 0, "l": 1, "gf": 0, "ga": 1}, "form": ["L"], "sos": 1.751}, "history": []}, "rangers-fc-south-aspire-u13g": {"id": "rangers-fc-south-aspire-u13g", "name": "Rangers FC South Aspire U13G", "code": "RAN", "age": "U13", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -0.653, "attack": 1.352, "defense": 2.005, "games": 1, "confidence": 0.13, "record": {"w": 0, "d": 0, "l": 1, "gf": 0, "ga": 4}, "form": ["L"], "sos": 1.751}, "history": []}, "cda-slammers-long-beach-bermudez-u13g": {"id": "cda-slammers-long-beach-bermudez-u13g", "name": "CDA Slammers Long Beach Bermudez U13G", "code": "SLA", "age": "U13", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -0.563, "attack": 1.695, "defense": 2.257, "games": 1, "confidence": 0.13, "record": {"w": 0, "d": 0, "l": 1, "gf": 1, "ga": 5}, "form": ["L"], "sos": 1.751}, "history": []}, "fc-premier-dplo-u13g": {"id": "fc-premier-dplo-u13g", "name": "FC Premier DPLO U13G", "code": "FC ", "age": "U13", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -0.876, "attack": 1.363, "defense": 2.239, "games": 1, "confidence": 0.124, "record": {"w": 0, "d": 0, "l": 1, "gf": 0, "ga": 5}, "form": ["L"], "sos": 1.751}, "history": []}, "city-sc-carlsbad-pre-academy-ii-loyola": {"id": "city-sc-carlsbad-pre-academy-ii-loyola", "name": "City SC Carlsbad Pre Academy II Loyola", "code": "CAR", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -0.708, "attack": 1.649, "defense": 2.357, "games": 1, "confidence": 0.123, "record": {"w": 0, "d": 0, "l": 1, "gf": 1, "ga": 5}, "form": ["L"], "sos": 1.491}, "history": []}, "eagles-sc": {"id": "eagles-sc", "name": "Eagles SC", "code": "EAG", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -0.241, "attack": 1.278, "defense": 1.519, "games": 1, "confidence": 0.123, "record": {"w": 0, "d": 0, "l": 1, "gf": 0, "ga": 2}, "form": ["L"], "sos": 1.491}, "history": []}, "legends-fc-black": {"id": "legends-fc-black", "name": "Legends FC Black", "code": "LEG", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -0.23, "attack": 1.293, "defense": 1.523, "games": 1, "confidence": 0.117, "record": {"w": 0, "d": 0, "l": 1, "gf": 0, "ga": 2}, "form": ["L"], "sos": 1.491}, "history": []}, "legends-fc-del-mar": {"id": "legends-fc-del-mar", "name": "Legends FC Del Mar", "code": "LEG", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -0.41, "attack": 1.648, "defense": 2.058, "games": 1, "confidence": 0.114, "record": {"w": 0, "d": 0, "l": 1, "gf": 1, "ga": 4}, "form": ["L"], "sos": 1.491}, "history": []}, "valley-surf-america-black": {"id": "valley-surf-america-black", "name": "Valley Surf America Black", "code": "VAL", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -1.137, "attack": 1.187, "defense": 2.324, "games": 1, "confidence": 0.126, "record": {"w": 0, "d": 0, "l": 1, "gf": 0, "ga": 6}, "form": ["L"], "sos": 2.009}, "history": []}, "merced-united-fc": {"id": "merced-united-fc", "name": "Merced United FC", "code": "MER", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -1.016, "attack": 1.544, "defense": 2.56, "games": 1, "confidence": 0.123, "record": {"w": 0, "d": 0, "l": 1, "gf": 1, "ga": 7}, "form": ["L"], "sos": 2.009}, "history": []}, "south-valley-united-sc-black": {"id": "south-valley-united-sc-black", "name": "South Valley United SC Black", "code": "SOU", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -0.769, "attack": 1.544, "defense": 2.314, "games": 1, "confidence": 0.123, "record": {"w": 0, "d": 0, "l": 1, "gf": 1, "ga": 6}, "form": ["L"], "sos": 2.009}, "history": []}, "mountain-view-los-altos-east-blue": {"id": "mountain-view-los-altos-east-blue", "name": "Mountain View Los Altos East Blue", "code": "MOU", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": 0.792, "attack": 1.888, "defense": 1.095, "games": 1, "confidence": 0.12, "record": {"w": 1, "d": 0, "l": 0, "gf": 2, "ga": 1}, "form": ["W"], "sos": 2.009}, "history": []}, "elk-grove-soccer-platinum-1": {"id": "elk-grove-soccer-platinum-1", "name": "Elk Grove Soccer Platinum 1", "code": "ELK", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -1.241, "attack": 1.655, "defense": 2.896, "games": 1, "confidence": 0.114, "record": {"w": 0, "d": 0, "l": 1, "gf": 1, "ga": 7}, "form": ["L"], "sos": 1.586}, "history": []}, "san-juan-south-sc-elite-u13g": {"id": "san-juan-south-sc-elite-u13g", "name": "San Juan South SC Elite U13G", "code": "SAN", "age": "U13", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": 0.058, "attack": 1.275, "defense": 1.216, "games": 1, "confidence": 0.113, "record": {"w": 0, "d": 0, "l": 1, "gf": 0, "ga": 1}, "form": ["L"], "sos": 1.586}, "history": []}, "sacramento-united-sc-pre-ga": {"id": "sacramento-united-sc-pre-ga", "name": "Sacramento United SC Pre GA", "code": "SAC", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": {"power": -0.483, "attack": 1.289, "defense": 1.772, "games": 1, "confidence": 0.108, "record": {"w": 0, "d": 0, "l": 1, "gf": 0, "ga": 3}, "form": ["L"], "sos": 1.586}, "history": []}, "pateadores-sc-pre-ecnl": {"id": "pateadores-sc-pre-ecnl", "name": "Pateadores SC Pre ECNL", "code": "PAT", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": null, "history": []}, "washington-premier-fc-pre-ecnl": {"id": "washington-premier-fc-pre-ecnl", "name": "Washington Premier FC Pre ECNL", "code": "WAS", "age": "U12", "state": "WA", "focus": false, "rank": null, "comparable": false, "rating": null, "history": []}, "mountain-view-los-altos-east-blue-u11g": {"id": "mountain-view-los-altos-east-blue-u11g", "name": "Mountain View Los Altos East Blue U11G", "code": "MOU", "age": "U11", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": null, "history": []}, "stockton-tlj-fc-red": {"id": "stockton-tlj-fc-red", "name": "Stockton TLJ FC Red", "code": "STO", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": null, "history": []}, "san-juan-sc-spirits-white-u13g": {"id": "san-juan-sc-spirits-white-u13g", "name": "San Juan SC Spirits White U13G", "code": "SAN", "age": "U13", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": null, "history": []}, "folsom-lake-surf-premier-i-u13g": {"id": "folsom-lake-surf-premier-i-u13g", "name": "Folsom Lake Surf Premier I U13G", "code": "FOL", "age": "U13", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": null, "history": []}, "lafc-so-cal-pre-ecnl": {"id": "lafc-so-cal-pre-ecnl", "name": "LAFC So Cal Pre ECNL", "code": "LAF", "age": "U12", "state": "CA", "focus": false, "rank": null, "comparable": false, "rating": null, "history": []}}, "games": [{"date": "2026-10-04", "a": "central-valley-fa-academy", "b": "valley-surf-america-black", "ga": 6, "gb": 0, "ev": "NCSC"}, {"date": "2026-10-04", "a": "san-juan-sc-pre-ecnl", "b": "elk-grove-soccer-platinum-1", "ga": 7, "gb": 1, "ev": "NCSC"}, {"date": "2026-10-03", "a": "san-juan-sc-pre-ecnl", "b": "san-juan-south-sc-elite-u13g", "ga": 1, "gb": 0, "ev": "NCPL"}, {"date": "2026-09-27", "a": "beach-fc-south-bay-souza", "b": "legends-fc", "ga": 6, "gb": 0, "ev": "SFL"}, {"date": "2026-09-27", "a": "san-diego-surf-sc-del-mar-hoyos", "b": "city-sc-carlsbad-pre-academy-hunt", "ga": 5, "gb": 1, "ev": "SFL"}, {"date": "2026-09-27", "a": "so-cal-blues-lime", "b": "beach-fc-south-bay-ortega", "ga": 2, "gb": 0, "ev": "SFL"}, {"date": "2026-09-27", "a": "socal-reds-fc-pre-ga-gh", "b": "sporting-california-usa-pre-ecnl-roman", "ga": 9, "gb": 2, "ev": "SFL"}, {"date": "2026-09-27", "a": "slammers-hb-koge-fc-pre-ecnl", "b": "rebels-sc-pre-ecnl", "ga": 0, "gb": 0, "ev": "SFL"}, {"date": "2026-09-27", "a": "lafc-so-cal-gold", "b": "legends-fc-santa-clarita-valley", "ga": 1, "gb": 1, "ev": "SFL"}, {"date": "2026-09-27", "a": "city-sc-southwest-mur-pre-ga", "b": "la-breakers-fc-pre-ecnl-1", "ga": 7, "gb": 2, "ev": "SFL"}, {"date": "2026-09-27", "a": "slammers-fc-pre-ecnl", "b": "slammers-fc-jb-maroon", "ga": 2, "gb": 1, "ev": "SFL"}, {"date": "2026-09-27", "a": "san-diego-surf-sc-del-mar-kim", "b": "city-sc-carlsbad-pre-academy-ii-loyola", "ga": 5, "gb": 1, "ev": "SFL"}, {"date": "2026-09-27", "a": "central-valley-fa-academy", "b": "merced-united-fc", "ga": 7, "gb": 1, "ev": "NCPL"}, {"date": "2026-09-26", "a": "beach-fc-south-bay-souza", "b": "lafc-so-cal-gold", "ga": 2, "gb": 0, "ev": "SFL"}, {"date": "2026-09-26", "a": "san-diego-surf-sc-del-mar-hoyos", "b": "cda-slammers-hb-pre-elite-crowley", "ga": 11, "gb": 0, "ev": "SFL"}, {"date": "2026-09-26", "a": "so-cal-blues-lime", "b": "sporting-california-usa-pre-ecnl-lopez", "ga": 3, "gb": 0, "ev": "SFL"}, {"date": "2026-09-26", "a": "socal-reds-fc-pre-ga-gh", "b": "pateadores-sc-predpl", "ga": 6, "gb": 1, "ev": "SFL"}, {"date": "2026-09-26", "a": "slammers-hb-koge-fc-pre-ecnl", "b": "city-sc-carlsbad-pre-academy-hunt", "ga": 5, "gb": 2, "ev": "SFL"}, {"date": "2026-09-26", "a": "legends-fc", "b": "rebels-sc-pre-ecnl", "ga": 0, "gb": 0, "ev": "SFL"}, {"date": "2026-09-26", "a": "city-sc-southwest-mur-pre-ga", "b": "sporting-california-usa-south-bay-pre-ecnl-robinson", "ga": 4, "gb": 0, "ev": "SFL"}, {"date": "2026-09-26", "a": "slammers-fc-pre-ecnl", "b": "slammers-fc-jb-white", "ga": 7, "gb": 0, "ev": "SFL"}, {"date": "2026-09-26", "a": "san-diego-surf-sc-del-mar-kim", "b": "eagles-sc", "ga": 2, "gb": 0, "ev": "SFL"}, {"date": "2026-09-26", "a": "central-valley-fa-academy", "b": "south-valley-united-sc-black", "ga": 6, "gb": 1, "ev": "NCPL"}, {"date": "2026-09-20", "a": "central-valley-fa-academy", "b": "mountain-view-los-altos-east-blue", "ga": 1, "gb": 2, "ev": "NCSC"}, {"date": "2026-09-20", "a": "san-juan-sc-pre-ecnl", "b": "sacramento-united-sc-pre-ga", "ga": 3, "gb": 0, "ev": "NCSC"}, {"date": "2026-09-19", "a": "beach-fc-south-bay-souza", "b": "legends-fc-gold", "ga": 1, "gb": 0, "ev": "SFL"}, {"date": "2026-09-19", "a": "san-diego-surf-sc-del-mar-hoyos", "b": "beach-fc-south-bay-ortega", "ga": 6, "gb": 1, "ev": "SFL"}, {"date": "2026-09-19", "a": "socal-reds-fc-pre-ga-gh", "b": "fram-sc-pre-academy", "ga": 5, "gb": 6, "ev": "SFL"}, {"date": "2026-09-19", "a": "slammers-hb-koge-fc-pre-ecnl", "b": "cda-slammers-hb-pre-elite-crowley", "ga": 3, "gb": 1, "ev": "SFL"}, {"date": "2026-09-19", "a": "lafc-so-cal-gold", "b": "rebels-sc-pre-ecnl", "ga": 2, "gb": 0, "ev": "SFL"}, {"date": "2026-09-19", "a": "legends-fc", "b": "city-sc-carlsbad-pre-academy-hunt", "ga": 1, "gb": 0, "ev": "SFL"}, {"date": "2026-09-19", "a": "city-sc-southwest-mur-pre-ga", "b": "encinitas-express-soccer-elite-henry", "ga": 6, "gb": 0, "ev": "SFL"}, {"date": "2026-09-19", "a": "slammers-fc-pre-ecnl", "b": "beach-fc-long-i-ayala", "ga": 3, "gb": 1, "ev": "SFL"}, {"date": "2026-09-13", "a": "slammers-fc-pre-ecnl", "b": "so-cal-blues-teal", "ga": 0, "gb": 0, "ev": "SFL"}, {"date": "2026-09-12", "a": "beach-fc-south-bay-souza", "b": "legends-fc-santa-clarita-valley", "ga": 7, "gb": 2, "ev": "SFL"}, {"date": "2026-09-12", "a": "san-diego-surf-sc-del-mar-hoyos", "b": "so-cal-blues-lime", "ga": 0, "gb": 1, "ev": "SFL"}, {"date": "2026-09-12", "a": "socal-reds-fc-pre-ga-gh", "b": "los-angeles-sc-black", "ga": 8, "gb": 2, "ev": "SFL"}, {"date": "2026-09-12", "a": "slammers-hb-koge-fc-pre-ecnl", "b": "so-cal-blues-blue", "ga": 2, "gb": 0, "ev": "SFL"}, {"date": "2026-09-12", "a": "lafc-so-cal-gold", "b": "cda-slammers-hb-pre-elite-crowley", "ga": 2, "gb": 0, "ev": "SFL"}, {"date": "2026-09-12", "a": "city-sc-southwest-mur-pre-ga", "b": "sdsc-surf-pre-ga", "ga": 1, "gb": 0, "ev": "SFL"}, {"date": "2026-09-12", "a": "slammers-fc-pre-ecnl", "b": "tudela-fc-los-angeles-la-white", "ga": 1, "gb": 1, "ev": "SFL"}, {"date": "2026-09-12", "a": "rebels-sc-pre-ecnl", "b": "sporting-california-usa-pre-ecnl-lopez", "ga": 1, "gb": 0, "ev": "SFL"}, {"date": "2026-09-12", "a": "san-diego-surf-sc-del-mar-kim", "b": "legends-fc-black", "ga": 2, "gb": 0, "ev": "SFL"}, {"date": "2026-09-07", "a": "beach-fc-south-bay-souza", "b": "san-diego-surf-sc-del-mar-hoyos", "ga": 0, "gb": 1, "ev": "BCLD"}, {"date": "2026-09-07", "a": "san-diego-surf-sc-del-mar-hoyos", "b": "so-cal-blues-lime", "ga": 1, "gb": 1, "ev": "BCLD"}, {"date": "2026-09-07", "a": "so-cal-blues-lime", "b": "legends-fc", "ga": 2, "gb": 1, "ev": "BCLD"}, {"date": "2026-09-07", "a": "socal-reds-fc-pre-ga-gh", "b": "so-cal-blues-blue-u11g", "ga": 5, "gb": 2, "ev": "BCLD"}, {"date": "2026-09-06", "a": "legends-fc", "b": "utah-royals-fc-az-pre-ecnl", "ga": 5, "gb": 0, "ev": "BCLD"}, {"date": "2026-09-06", "a": "san-diego-surf-sc-del-mar-kim", "b": "legends-fc-del-mar", "ga": 4, "gb": 1, "ev": "BCLD"}, {"date": "2026-08-30", "a": "lafc-so-cal-gold", "b": "lafc-so-cal-ecnl-rl-u13g", "ga": 3, "gb": 1, "ev": "VCF"}, {"date": "2026-08-23", "a": "slammers-fc-pre-ecnl", "b": "lazers-sc-red-u13g", "ga": 3, "gb": 2, "ev": "TOC"}, {"date": "2026-08-23", "a": "slammers-fc-pre-ecnl", "b": "cda-slammers-noc-fortes-u13g", "ga": 1, "gb": 0, "ev": "TOC"}, {"date": "2026-08-22", "a": "slammers-fc-pre-ecnl", "b": "rangers-fc-south-aspire-u13g", "ga": 4, "gb": 0, "ev": "TOC"}, {"date": "2026-08-22", "a": "slammers-fc-pre-ecnl", "b": "cda-slammers-long-beach-bermudez-u13g", "ga": 5, "gb": 1, "ev": "TOC"}, {"date": "2026-08-09", "a": "slammers-fc-pre-ecnl", "b": "fc-premier-dplo-u13g", "ga": 5, "gb": 0, "ev": "WCFC"}], "fixtures": [{"date": "2026-10-10", "time": "1:00 PM", "venue": null, "a": "beach-fc-south-bay-souza", "b": "so-cal-blues-blue", "ev": "SFL", "wx": {"status": "forecast", "point": "Torrance", "miles": null, "approximate": true, "summary": "Mostly cloudy", "high": 80, "wind": "W 5–10 mph, gusts to 15", "text": "Patchy fog before 11am. Otherwise, mostly cloudy, with a high near 80. West wind 5 to 10 mph, with gusts as high as 15 mph."}}, {"date": "2026-10-10", "time": "10:25 AM", "venue": "Sycamore Ridge Elementary School, Field 1", "a": "san-diego-surf-sc-del-mar-kim", "b": "pateadores-sc-predpl", "ev": "SFL", "wx": {"status": "forecast", "point": "Encinitas", "miles": 8, "approximate": false, "summary": "Mostly cloudy", "high": 76, "wind": "Light, then W 5–10 mph", "text": "Mostly cloudy, with a high near 76. Light west wind increasing to 5 to 10 mph in the afternoon."}}, {"date": "2026-10-10", "time": "2:30 PM", "venue": "Arroyo Park, Field 1", "a": "slammers-hb-koge-fc-pre-ecnl", "b": "sporting-california-usa-pre-ecnl-lopez", "ev": "SFL", "wx": {"status": "forecast", "point": "Irvine", "miles": 0, "approximate": false, "summary": "Mostly cloudy", "high": 81, "wind": "Calm, then W 5 mph", "text": "Mostly cloudy, with a high near 81. Calm wind becoming west around 5 mph in the afternoon."}}, {"date": "2026-10-10", "time": "2:40 PM", "venue": "Encinitas Community Park, ECP #2B", "a": "socal-reds-fc-pre-ga-gh", "b": "encinitas-express-soccer-elite-henry", "ev": "SFL", "wx": {"status": "forecast", "point": "Encinitas", "miles": 0, "approximate": false, "summary": "Mostly cloudy", "high": 76, "wind": "Light, then W 5–10 mph", "text": "Mostly cloudy, with a high near 76. Light west wind increasing to 5 to 10 mph in the afternoon."}}, {"date": "2026-10-10", "time": "3:20 PM", "venue": "SilverLakes Soccer Complex, Field 18A", "a": "legends-fc", "b": "legends-fc-gold", "ev": "SFL", "wx": {"status": "forecast", "point": "Norco", "miles": 0, "approximate": false, "summary": "Mostly cloudy", "high": 84, "wind": "W 5–10 mph, gusts to 20", "text": "Mostly cloudy, with a high near 84. Light and variable wind becoming west 5 to 10 mph in the afternoon. Winds could gust as high as 20 mph."}}, {"date": "2026-10-10", "time": "4:25 PM", "venue": "Los Alamos Hills Sports Park, Field 2", "a": "city-sc-southwest-mur-pre-ga", "b": "legends-fc-black", "ev": "SFL", "wx": {"status": "forecast", "point": "Murrieta", "miles": 0, "approximate": false, "summary": "Cloudy", "high": 83, "wind": "SW 5–10 mph", "text": "Cloudy, with a high near 83. Light and variable wind becoming southwest 5 to 10 mph in the afternoon."}}, {"date": "2026-10-10", "time": "8:00 AM", "venue": "Surf Sports Park, Field 23", "a": "san-juan-sc-pre-ecnl", "b": "lafc-so-cal-pre-ecnl", "ev": "ECSD", "wx": {"status": "forecast", "point": "Encinitas", "miles": 5, "approximate": false, "summary": "Mostly cloudy", "high": 76, "wind": "Light, then W 5–10 mph", "text": "Mostly cloudy, with a high near 76. Light west wind increasing to 5 to 10 mph in the afternoon."}}, {"date": "2026-10-10", "time": "9:00 AM", "venue": "Los Alisos Intermediate School", "a": "slammers-fc-pre-ecnl", "b": "pateadores-sc-pre-ecnl", "ev": "SFL", "wx": {"status": "forecast", "point": "Mission Viejo", "miles": 0, "approximate": false, "summary": "Mostly cloudy", "high": 81, "wind": "Calm, then SW 5 mph", "text": "Mostly cloudy, with a high near 81. Calm wind becoming southwest around 5 mph in the afternoon."}}, {"date": "2026-10-10", "time": "9:30 AM", "venue": "Surf Sports Park, Field 24", "a": "rebels-sc-pre-ecnl", "b": "washington-premier-fc-pre-ecnl", "ev": "ECSD", "wx": {"status": "forecast", "point": "Encinitas", "miles": 5, "approximate": false, "summary": "Mostly cloudy", "high": 76, "wind": "Light, then W 5–10 mph", "text": "Mostly cloudy, with a high near 76. Light west wind increasing to 5 to 10 mph in the afternoon."}}, {"date": "2026-10-17", "time": "10:50 AM", "venue": "San Bernardino Soccer Complex, Field 7B", "a": "san-diego-surf-sc-del-mar-kim", "b": "sporting-california-usa-pre-ecnl-roman", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-10"}}, {"date": "2026-10-17", "time": "12:30 PM", "venue": "Da Vinci Schools Stadium", "a": "beach-fc-south-bay-souza", "b": "beach-fc-south-bay-ortega", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-10"}}, {"date": "2026-10-17", "time": "3:00 PM", "venue": "Bonita Canyon Sports Park #5", "a": "slammers-fc-pre-ecnl", "b": "tudela-fc-los-angeles-la-white", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-10"}}, {"date": "2026-10-17", "time": "3:20 PM", "venue": "SilverLakes Soccer Complex, Field 13", "a": "slammers-hb-koge-fc-pre-ecnl", "b": "legends-fc-gold", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-10"}}, {"date": "2026-10-17", "time": "4:10 PM", "venue": "Alemany High School, Stadium", "a": "lafc-so-cal-gold", "b": "legends-fc", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-10"}}, {"date": "2026-10-17", "time": "4:15 PM", "venue": "Stockton Soccer Complex, Field 6B", "a": "central-valley-fa-academy", "b": "stockton-tlj-fc-red", "ev": "NCPL", "wx": {"status": "pending", "availableOn": "2026-10-10"}}, {"date": "2026-10-17", "time": "4:30 PM", "venue": "Quail Hill, A", "a": "socal-reds-fc-pre-ga-gh", "b": "sporting-california-usa-south-bay-pre-ecnl-robinson", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-10"}}, {"date": "2026-10-17", "time": "6:30 PM", "venue": "Aviara Park, Field 2 (West)", "a": "so-cal-blues-lime", "b": "city-sc-carlsbad-pre-academy-hunt", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-10"}}, {"date": "2026-10-17", "time": "8:00 AM", "venue": "Westminster High School, Field 2", "a": "rebels-sc-pre-ecnl", "b": "cda-slammers-hb-pre-elite-crowley", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-10"}}, {"date": "2026-10-17", "time": "9:00 AM", "venue": "Surf Sports Park, Field 11", "a": "san-diego-surf-sc-del-mar-hoyos", "b": "sporting-california-usa-pre-ecnl-lopez", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-10"}}, {"date": "2026-10-18", "time": "10:30 AM", "venue": "San Juan Hills Golf Club, Field 5", "a": "so-cal-blues-lime", "b": "lafc-so-cal-gold", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-11"}}, {"date": "2026-10-18", "time": "3:00 PM", "venue": "Tiemann Law Firm Fields, Black Field", "a": "san-juan-sc-pre-ecnl", "b": "folsom-lake-surf-premier-i-u13g", "ev": "NCPL", "wx": {"status": "pending", "availableOn": "2026-10-11"}}, {"date": "2026-10-18", "time": "3:50 PM", "venue": "Surf Sports Park, Field 11", "a": "san-diego-surf-sc-del-mar-hoyos", "b": "legends-fc-santa-clarita-valley", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-11"}}, {"date": "2026-10-18", "time": "9:25 AM", "venue": "Miraleste Intermediate School, Upper #2", "a": "san-diego-surf-sc-del-mar-kim", "b": "fram-sc-pre-academy", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-11"}}, {"date": "2026-10-24", "time": "11:35 AM", "venue": "Arroyo Park, Field 1", "a": "slammers-fc-pre-ecnl", "b": "beach-fc-long-i-ayala", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-17"}}, {"date": "2026-10-24", "time": "12:15 PM", "venue": "Pleasant Valley Fields, Field 5", "a": "city-sc-southwest-mur-pre-ga", "b": "eagles-sc", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-17"}}, {"date": "2026-10-24", "time": "8:00 AM", "venue": "Quail Hill, A", "a": "socal-reds-fc-pre-ga-gh", "b": "city-sc-carlsbad-pre-academy-ii-loyola", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-17"}}, {"date": "2026-10-25", "time": "10:25 AM", "venue": "Surf Sports Park, Field 09", "a": "city-sc-southwest-mur-pre-ga", "b": "san-diego-surf-sc-del-mar-kim", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-18"}}, {"date": "2026-10-25", "time": "11:50 AM", "venue": "SilverLakes Soccer Complex, Field 19", "a": "san-diego-surf-sc-del-mar-hoyos", "b": "legends-fc", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-18"}}, {"date": "2026-10-25", "time": "2:20 PM", "venue": "Southwestern College, T-1", "a": "beach-fc-south-bay-souza", "b": "rebels-sc-pre-ecnl", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-18"}}, {"date": "2026-10-25", "time": "3:30 PM", "venue": "OC Great Park, Field 19", "a": "so-cal-blues-lime", "b": "slammers-hb-koge-fc-pre-ecnl", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-18"}}, {"date": "2026-10-25", "time": "5:00 PM", "venue": "OC Great Park, Field 19", "a": "lafc-so-cal-gold", "b": "so-cal-blues-blue", "ev": "SFL", "wx": {"status": "pending", "availableOn": "2026-10-18"}}, {"date": "2026-10-30", "time": "7:00 PM", "venue": "Tiemann Law Firm Fields, White Field", "a": "san-juan-sc-pre-ecnl", "b": "san-juan-sc-spirits-white-u13g", "ev": "NCPL", "wx": {"status": "pending", "availableOn": "2026-10-23"}}, {"date": "2026-10-31", "time": null, "venue": null, "a": "central-valley-fa-academy", "b": "mountain-view-los-altos-east-blue-u11g", "ev": "NCPL", "wx": {"status": "pending", "availableOn": "2026-10-24"}}, {"date": "2026-11-07", "time": "1:00 PM", "venue": "River Islands Sports Park, Field 8", "a": "central-valley-fa-academy", "b": "valley-surf-america-black", "ev": "NCPL", "wx": {"status": "pending", "availableOn": "2026-10-31"}}], "weather": {"source": "National Weather Service", "issued": "2026-10-08", "note": "Saturday daytime point forecasts issued Oct 8, 2026"}}</script>
+<script>
+const D = JSON.parse(document.getElementById("data").textContent);
+const T = D.teams, EV = D.events;
+for (const id in T) T[id].gender = "girls";
+const localToday = new Date().toLocaleDateString("en-CA");
+const TODAY = localToday > D.asOf ? localToday : D.asOf;
+const HALF = 35; // U12: two 35-minute halves
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pct = (p) => Math.round(p * 100) + "%";
+const signed = (n, d = 1) => (n >= 0 ? "+" : "−") + Math.abs(n).toFixed(d);
+const day = (iso, opts = { weekday: "short", month: "short", day: "numeric" }) => new Date(iso + "T12:00:00").toLocaleDateString("en-US", opts);
+const short = (iso) => day(iso, { month: "short", day: "numeric" });
+const chev = `<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>`;
+const hash = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return (h >>> 0).toString(36); };
+const fxId = (f) => "fx_" + hash(`${f.date}|${[f.a, f.b].sort().join("|")}`);
+D.fixtures.forEach((f) => (f.id = fxId(f)));
+let toastTimer;
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), 2600); }
+
+// ================= rating engine (same model as packages/core/src/rating.ts) =================
+const P = { windowDays: 540, halfLifeDays: 180, marginCap: 6, priorGames: 2, iterations: 300 };
+function fit(games, asOf) {
+  const asOfMs = Date.parse(asOf), gs = [];
+  for (const g of games) {
+    const age = (asOfMs - Date.parse(g.date)) / 864e5;
+    if (age < 0 || age > P.windowDays) continue;
+    let h = g.ga, a = g.gb;
+    if (h - a > P.marginCap) h = a + P.marginCap; else if (a - h > P.marginCap) a = h + P.marginCap;
+    gs.push({ h: g.a, a: g.b, gh: h, ga: a, w: Math.pow(0.5, age / P.halfLifeDays), raw: g });
+  }
+  const ids = []; const seen = new Set(); for (const g of gs) for (const x of [g.h, g.a]) if (!seen.has(x)) { seen.add(x); ids.push(x); }
+  const att = {}, def = {}, by = {};
+  for (const id of ids) { att[id] = 1; def[id] = 1; by[id] = []; }
+  let wSum = 0, goal = 0;
+  for (const g of gs) { wSum += 2 * g.w; goal += g.w * (g.gh + g.ga); by[g.h].push({ g, home: true }); by[g.a].push({ g, home: false }); }
+  let mu = wSum > 0 ? goal / wSum : 1.5;
+  const pr = P.priorGames;
+  for (let it = 0; it < P.iterations; it++) {
+    let delta = 0;
+    for (const id of ids) {
+      let sc = pr * mu, eS = pr * mu, cc = pr * mu, eC = pr * mu;
+      for (const { g, home } of by[id]) {
+        const opp = home ? g.a : g.h;
+        sc += g.w * (home ? g.gh : g.ga); eS += g.w * mu * def[opp];
+        cc += g.w * (home ? g.ga : g.gh); eC += g.w * mu * att[opp];
+      }
+      const na = sc / eS, nd = cc / eC;
+      delta = Math.max(delta, Math.abs(na - att[id]), Math.abs(nd - def[id]));
+      att[id] = na; def[id] = nd;
+    }
+    const gm = (o) => Math.exp(ids.reduce((s, k) => s + Math.log(Math.max(o[k], 1e-9)), 0) / ids.length);
+    if (ids.length) { const ga = gm(att), gd = gm(def); for (const id of ids) { att[id] /= ga; def[id] /= gd; } mu *= ga * gd; }
+    if (delta < 1e-7) break;
+  }
+  const R = {};
+  for (const id of ids) {
+    const list = by[id].slice().sort((x, y) => y.g.raw.date.localeCompare(x.g.raw.date));
+    const rec = { w: 0, d: 0, l: 0, gf: 0, ga: 0 }, form = []; let eff = 0;
+    for (const { g, home } of list) {
+      const gf = home ? g.raw.ga : g.raw.gb, ga = home ? g.raw.gb : g.raw.ga;
+      rec.gf += gf; rec.ga += ga; const r = gf > ga ? "W" : gf < ga ? "L" : "D"; rec[r === "W" ? "w" : r === "L" ? "l" : "d"]++;
+      if (form.length < 5) form.push(r); eff += g.w;
+    }
+    R[id] = { power: mu * att[id] - mu * def[id], attack: mu * att[id], defense: mu * def[id], games: list.length, record: rec, form, eff, opps: list.map(({ g, home }) => (home ? g.a : g.h)) };
+  }
+  for (const id of ids) {
+    const r = R[id], mean = (xs) => xs.reduce((s, x) => s + x, 0) / xs.length;
+    r.sos = r.opps.length ? mean(r.opps.map((o) => R[o].power)) : 0;
+    r.confidence = (1 - Math.exp(-r.eff / 6)) * (0.5 + 0.5 * (r.opps.length ? mean(r.opps.map((o) => Math.min(1, R[o].games / 6))) : 0));
+  }
+  return { mu, att, def, R };
+}
+function predictWith(m, h, a) {
+  const lh = m.mu * (m.att[h] ?? 1) * (m.def[a] ?? 1), la = m.mu * (m.att[a] ?? 1) * (m.def[h] ?? 1);
+  const row = (l) => { const r = [Math.exp(-l)]; for (let k = 1; k <= 12; k++) r.push(r[k - 1] * l / k); return r; };
+  const ph = row(lh), pa = row(la); let w = 0, d = 0, l = 0; const cells = [];
+  for (let i = 0; i <= 12; i++) for (let j = 0; j <= 12; j++) { const p = ph[i] * pa[j]; if (i > j) w += p; else if (i < j) l += p; else d += p; cells.push([i, j, p]); }
+  const s = w + d + l; cells.sort((x, y) => y[2] - x[2]);
+  return { w: w / s, d: d / s, l: l / s, xh: lh, xa: la, top: cells.slice(0, 3).map(([i, j, p]) => [i, j, p / s]) };
+}
+function connectedTo(games, seed) {
+  const adj = {}; for (const g of games) { (adj[g.a] ??= []).push(g.b); (adj[g.b] ??= []).push(g.a); }
+  const seen = new Set([seed]), q = [seed];
+  while (q.length) for (const n of adj[q.pop()] ?? []) if (!seen.has(n)) { seen.add(n); q.push(n); }
+  return seen;
+}
+function mainGroup(games) {
+  let best = new Set(); const done = new Set();
+  for (const g of games) if (!done.has(g.a)) { const c = connectedTo(games, g.a); c.forEach((x) => done.add(x)); if (c.size > best.size) best = c; }
+  return best;
+}
+const rankIds = (m, ids) => ids.filter((id) => m.R[id]).sort((a, b) => m.R[b].power - m.R[a].power || m.R[b].confidence - m.R[a].confidence);
+
+// ================= state =================
+const store = (() => {
+  let s = { mine: "beach-fc-south-bay-souza", watch: ["san-diego-surf-sc-del-mar-hoyos", "so-cal-blues-lime"], tab: "home",
+    gender: "girls", scope: "state", state: "CA", fa: null, fb: null, gf: 2, gaa: 1, pkind: "field" };
+  try { const v = JSON.parse(localStorage.getItem("uf-preview-v3") || "null"); if (v) s = { ...s, ...v }; } catch {}
+  return { get: () => s, set(p) { s = { ...s, ...p }; try { localStorage.setItem("uf-preview-v3", JSON.stringify(s)); } catch {} } };
+})();
+const scopeLabel = () => { const s = store.get(); return s.scope === "national" ? "National" : s.state; };
+const inScope = (id) => { const s = store.get(), t = T[id]; return t && t.gender === s.gender && (s.scope === "national" || t.state === s.state); };
+
+// live scores: shared through the page's database when available, otherwise kept on this device
+let live = {}; let liveMode = "starting"; let db = null; let canWrite = null;
+try { live = JSON.parse(localStorage.getItem("uf-live-local") || "{}"); } catch {}
+const liveList = () => Object.entries(live).map(([id, v]) => ({ id, ...v })).filter((x) => T[x.a] && T[x.b]);
+
+// ---------- crowdsourced teams, games and score confirmations ----------
+const DEVICE = window.YSR_DEVICE || "anon";
+const REQ = Math.max(1, Number(window.YSR_CONFIG?.confirmationsRequired ?? 2) || 2);
+const IN_APP = !!window.YSR_APP;
+let userTeams = {}, userFx = {}, confirms = {};
+// Things this device just wrote, kept until the shared copy comes back so a snapshot in between doesn't drop them.
+const pend = { live: {}, teams: {}, fixtures: {}, confirms: {} };
+const withPend = (name, next) => { for (const k in next) delete pend[name][k]; return { ...pend[name], ...next }; };
+try { userTeams = JSON.parse(localStorage.getItem("uf-user-teams") || "{}"); userFx = JSON.parse(localStorage.getItem("uf-user-fixtures") || "{}"); } catch {}
+EV.OTH = EV.OTH || { name: "Friendly / other", kind: "friendly" };
+function applyCrowd() {
+  for (const t of Object.values(userTeams)) {
+    if (!t?.id || !t.name || (T[t.id] && !T[t.id].userAdded)) continue;
+    T[t.id] = { focus: false, history: [], age: "U12", state: "CA", gender: "girls", ...t, userAdded: true };
+  }
+  for (let i = D.fixtures.length - 1; i >= 0; i--) if (D.fixtures[i].userAdded) D.fixtures.splice(i, 1);
+  for (const f of Object.values(userFx)) {
+    if (!f?.a || !f?.b || !T[f.a] || !T[f.b] || !/^\d{4}-\d\d-\d\d$/.test(f.date || "")) continue;
+    const id = fxId(f); if (D.fixtures.some((x) => x.id === id)) continue;
+    D.fixtures.push({ venue: null, time: null, ev: "OTH", ...f, id, userAdded: true });
+  }
+}
+applyCrowd();
+function persistCrowd() { try { localStorage.setItem("uf-user-teams", JSON.stringify(userTeams)); localStorage.setItem("uf-user-fixtures", JSON.stringify(userFx)); } catch {} }
+const neededConfirms = () => (liveMode === "shared" ? REQ : 1);
+const confirmCount = (id) => {
+  const x = live[id]; if (!x || x.status !== "final") return 0;
+  return 1 + new Set(Object.values(confirms).filter((c) => c && c.game === id && c.device !== x.by && c.ga === x.ga && c.gb === x.gb).map((c) => c.device)).size;
+};
+const counted = (id) => confirmCount(id) >= neededConfirms();
+const pairKey = (g) => g.date + "|" + [g.a, g.b].sort().join("|");
+function allGames() {
+  const have = new Set(D.games.map(pairKey));
+  const extra = liveList().filter((x) => x.status === "final" && counted(x.id) && !have.has(pairKey(x))).map((x) => ({ date: x.date, a: x.a, b: x.b, ga: x.ga, gb: x.gb, ev: x.ev, live: true }));
+  return [...D.games, ...extra];
+}
+let M = null, RANKED = [], GROUP = new Set();
+function recompute() {
+  const games = allGames();
+  M = fit(games, TODAY);
+  GROUP = mainGroup(games);
+  RANKED = rankIds(M, Object.keys(M.R).filter((id) => (GROUP.has(id) || D.unranked.includes(id)) && M.R[id].games >= 3));
+}
+recompute();
+const scopedRank = (id) => { const list = RANKED.filter(inScope); const i = list.indexOf(id); return i < 0 ? null : { rank: i + 1, of: list.length }; };
+const rankIn = (id, scope) => { const list = RANKED.filter((x) => T[x].gender === T[id].gender && (scope === "national" || T[x].state === scope)); const i = list.indexOf(id); return i < 0 ? null : { rank: i + 1, of: list.length }; };
+const conf = (h, a) => (GROUP.has(h) && GROUP.has(a) ? Math.min(M.R[h]?.confidence ?? 0, M.R[a]?.confidence ?? 0) : 0);
+const predict = (h, a) => ({ ...predictWith(M, h, a), conf: conf(h, a) });
+const confChip = (p) => p.conf >= 0.5 ? "" : p.conf >= 0.3 ? `<span class="chip warn">Early-season estimate</span>` : `<span class="chip warn">Rough estimate</span>`;
+
+// ================= navigation =================
+let stack = [];
+const current = () => stack[stack.length - 1];
+const go = (v) => { stack.push(v); render(); window.scrollTo(0, 0); };
+const back = () => { stack.pop(); render(); window.scrollTo(0, 0); };
+const setTab = (tab) => { store.set({ tab }); stack = []; render(); window.scrollTo(0, 0); };
+
+// ================= helpers =================
+const gamesFor = (id) => allGames().filter((g) => g.a === id || g.b === id).sort((x, y) => y.date.localeCompare(x.date))
+  .map((g) => g.a === id ? { date: g.date, opp: g.b, gf: g.ga, ga: g.gb, ev: g.ev, live: g.live } : { date: g.date, opp: g.a, gf: g.gb, ga: g.ga, ev: g.ev, live: g.live });
+const isDone = (f) => live[f.id]?.status === "final";
+const fixturesFor = (id) => D.fixtures.filter((f) => f.date >= TODAY && !isDone(f) && (f.a === id || f.b === id)).map((f) => ({ ...f, me: id, opp: f.a === id ? f.b : f.a }));
+const movement = (id) => { const h = T[id].history; if (h.length < 2) return null; return h[h.length - 2].rank - h[h.length - 1].rank; };
+const mvHtml = (n) => n == null ? `<span class="mv flat">new</span>` : n === 0 ? `<span class="mv flat">–</span>` : `<span class="mv ${n > 0 ? "up" : "down"}">${n > 0 ? "▲" : "▼"}${Math.abs(n)}</span>`;
+const formHtml = (f, n = 5) => `<span class="form" aria-label="Last results, oldest first: ${f.slice(0, n).reverse().join(" ")}">${f.slice(0, n).reverse().map((r) => `<i class="${r}">${r}</i>`).join("")}</span>`;
+const rec = (r) => `${r.record.w}-${r.record.d}-${r.record.l}`;
+const code = (id, cls = "") => `<span class="code ${cls}" aria-hidden="true">${esc(T[id]?.code ?? "?")}</span>`;
+const resultOf = (gf, ga) => gf > ga ? "W" : gf < ga ? "L" : "D";
+const evName = (e) => EV[e]?.name ?? "";
+const minuteOf = (x) => {
+  if (x.status === "halftime") return "Halftime";
+  if (x.status === "final") return "Final";
+  const start = x.half === 2 ? x.secondAt : x.kickoffAt; if (!start) return "Live";
+  const m = Math.max(1, Math.floor((Date.now() - Date.parse(start)) / 60000) + 1);
+  return x.half === 2 ? `${Math.min(HALF + m, HALF * 2)}′` : `${Math.min(m, HALF)}′`;
+};
+
+// ================= pieces =================
+function filterBar() {
+  const s = store.get(), states = [...new Set(Object.values(T).map((t) => t.state))].sort();
+  return `<div class="filters">
+    <div class="seg" role="group" aria-label="Gender"><button data-set='{"gender":"girls"}' aria-pressed="${s.gender === "girls"}">Girls</button><button data-set='{"gender":"boys"}' aria-pressed="${s.gender === "boys"}">Boys</button></div>
+    <div class="seg" role="group" aria-label="Scope"><button data-set='{"scope":"state"}' aria-pressed="${s.scope === "state"}">State</button><button data-set='{"scope":"national"}' aria-pressed="${s.scope === "national"}">National</button></div>
+    ${s.scope === "state" ? `<div class="field"><label for="f-state">State</label><select id="f-state">${states.map((x) => `<option ${x === s.state ? "selected" : ""}>${x}</option>`).join("")}</select></div>` : ""}
+    <div class="field ${s.scope === "state" ? "" : "wide"}"><label for="f-age">Age group</label><select id="f-age"><option selected>U12</option></select></div>
+  </div>`;
+}
+function emptyFor() {
+  const s = store.get();
+  if (s.gender === "boys") return `<div class="notice info"><b>No boys results in this preview yet.</b> Send screenshots of a boys team's results and schedule and they'll show up here, ranked the same way.</div>`;
+  if (s.scope === "state" && s.state !== "CA") return `<div class="notice info"><b>No ${esc(s.state)} teams have enough connected games yet.</b> This preview's data is from California teams; ${esc(s.state)} teams only appear as their opponents.</div>`;
+  return "";
+}
+function liveCard(x) {
+  const f = D.fixtures.find((y) => y.id === x.id) ?? x;
+  return `<button class="panel" style="display:block;width:100%" data-score="${x.id}">
+    <div class="match-head"><span class="row" style="gap:6px">${x.status === "final" ? `<span class="chip plain">Final</span>${counted(x.id) ? "" : `<span class="chip warn">Needs confirming</span>`}` : `<span class="chip live"><span class="dot"></span>${esc(minuteOf(x))}</span>`}</span><span class="ell" style="max-width:55%;text-align:right">${esc(evName(f.ev))}</span></div>
+    <div class="panel-body" style="gap:8px">
+      <div class="side">${code(x.a)}<span class="grow ell" style="font-weight:600">${esc(T[x.a].name)}</span><span class="pct num">${x.ga}</span></div>
+      <div class="side">${code(x.b)}<span class="grow ell" style="font-weight:600">${esc(T[x.b].name)}</span><span class="pct num">${x.gb}</span></div>
+    </div></button>`;
+}
+// ---------- game-day weather ----------
+const WX_SVG = {
+  cloud: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7.2 9.2 4.5 4.5 0 0 0 7 18z"/></svg>`,
+  partly: `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8.5" cy="8.5" r="3.4" fill="#E7A512" stroke="none"/><path d="M8.5 2.5v1.3M2.5 8.5h1.3M4.3 4.3l.9.9M12.7 4.3l-.9.9" stroke="#E7A512"/><path d="M7 18h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7.2 9.2 4.5 4.5 0 0 0 7 18z" fill="var(--surface)" stroke="var(--ink-2)"/></svg>`,
+  sun: `<svg viewBox="0 0 24 24" fill="none" stroke="#E7A512" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="#E7A512" stroke="none"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>`,
+  rain: `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 15h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7.2 6.2 4.5 4.5 0 0 0 7 15z" stroke="var(--ink-2)"/><path d="M8 18l-1 2.5M12 18l-1 2.5M16 18l-1 2.5" stroke="#2F80C8"/></svg>`,
+  storm: `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 14h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7.2 5.2 4.5 4.5 0 0 0 7 14z" stroke="var(--ink-2)"/><path d="M12.5 14l-2.5 4h3l-2 4" stroke="#E7A512"/></svg>`,
+  cal: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>`,
+};
+const wxKind = (w) => { const t = (w.summary || "").toLowerCase(); return /thunder/.test(t) ? "storm" : /rain|shower/.test(t) ? "rain" : /partly|mostly sunny/.test(t) ? "partly" : /cloud/.test(t) ? "cloud" : "sun"; };
+const wxWhere = (w) => w.approximate ? `${w.point} area forecast (home area)` : w.miles ? `Forecast for ${w.point}, about ${w.miles} mi away` : `Forecast for ${w.point}`;
+/** Full weather block for a game (match card, match screen). */
+function wxBlock(f) {
+  const w = f?.wx;
+  if (!w) return "";
+  if (w.status === "pending") return `<div class="wx-pending">${WX_SVG.cal}Weather forecast opens ${day(w.availableOn)}</div>`;
+  return `<div class="wx" role="group" aria-label="Game-day weather: ${esc(w.summary)}, high ${w.high} degrees, wind ${esc(w.wind)}">
+    ${WX_SVG[wxKind(w)]}
+    <div class="wx-main"><span class="wx-t"><b>${w.high}°</b>${esc(w.summary)}</span>
+      <span class="wx-s">High for the day · Wind ${esc(w.wind)}</span>
+      <span class="xs faint">${esc(wxWhere(w))} · National Weather Service</span></div>
+  </div>`;
+}
+/** One-glance version for list rows. */
+const wxMini = (f) => f?.wx?.status === "forecast" ? `<span class="wx-mini">${WX_SVG[wxKind(f.wx)]}${f.wx.high}°</span>` : "";
+
+function matchCard(f) {
+  if (live[f.id]) return liveCard({ id: f.id, ...live[f.id] });
+  const p = predict(f.me, f.opp), fav = p.w >= p.l ? "a" : "b";
+  return `<button class="panel" style="display:block;width:100%" data-match="${f.me}|${f.opp}|${f.date}">
+    <div class="match-head"><span><b>${day(f.date)}</b>${f.time ? " · " + esc(f.time) : ""}</span><span class="ell" style="max-width:55%;text-align:right">${esc(evName(f.ev))}</span></div>
+    <div class="panel-body">
+      <div class="side">${code(f.me)}<span class="grow ell" style="font-weight:600">${esc(T[f.me].name)}</span><span class="pct ${fav === "a" ? "fav" : ""}">${pct(p.w)}</span></div>
+      <div class="side">${code(f.opp)}<span class="grow ell" style="font-weight:600">${esc(T[f.opp].name)}</span><span class="pct ${fav === "b" ? "fav" : ""}">${pct(p.l)}</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="tri" role="img" aria-label="Win ${pct(p.w)}, draw ${pct(p.d)}, loss ${pct(p.l)}"><span style="flex:${p.w}"></span><span style="flex:${p.d}"></span><span style="flex:${p.l}"></span></div>
+        <div class="tri-legend"><span>Draw ${pct(p.d)}</span><span>Most likely ${p.top[0][0]}–${p.top[0][1]}</span></div>
+      </div>
+      ${f.venue || p.conf < 0.5 ? `<div class="row between" style="gap:8px"><span class="xs faint ell">${esc(f.venue ?? "Venue not posted yet")}</span>${confChip(p)}</div>` : ""}
+      ${wxBlock(f)}
+    </div></button>`;
+}
+function fixtureRow(f) {
+  const p = predict(f.me, f.opp), lv = live[f.id];
+  return `<button class="list-item" data-match="${f.me}|${f.opp}|${f.date}">
+    <span style="width:52px;flex:none" class="xs muted">${short(f.date)}</span>
+    <span class="grow"><span class="ell" style="display:block;font-weight:600">${esc(T[f.opp].name)}</span><span class="xs faint ell" style="display:flex;gap:8px;align-items:center">${wxMini(f)}<span class="ell">${esc(evName(f.ev))}</span></span></span>
+    ${lv ? `<span class="chip live"><span class="dot"></span>${lv.a === f.me ? lv.ga + "–" + lv.gb : lv.gb + "–" + lv.ga}</span>` : `<span class="num sm" style="text-align:right;flex:none"><b>${pct(p.w)}</b><span class="faint"> win</span></span>`}${chev}</button>`;
+}
+function resultsTable(id, limit = 99) {
+  const rows = gamesFor(id).slice(0, limit);
+  if (!rows.length) return `<div class="panel-body"><p class="muted">No results yet.</p></div>`;
+  return `<table class="tbl"><thead><tr><th>Date</th><th>Opponent</th><th class="r">Score</th></tr></thead><tbody>
+    ${rows.map((g) => { const r = resultOf(g.gf, g.ga); return `<tr class="click" data-x="stats|${id}|${g.opp}|${g.date}"><td class="xs muted" style="white-space:nowrap">${short(g.date)}</td>
+      <td style="max-width:0;width:100%"><span class="ell" style="display:block;font-weight:500">${esc(T[g.opp].name)}</span><span class="xs faint ell" style="display:block">${g.live ? "Entered live · " : ""}${esc(evName(g.ev))}</span></td>
+      <td class="r"><span class="score"><span class="res ${r}">${r}</span>${g.gf}–${g.ga}</span><span class="res-stats">Stats ›</span></td></tr>`; }).join("")}</tbody></table>`;
+}
+function spark(id) {
+  const h = T[id].history; if (h.length < 3) return "";
+  const W = 320, H = 86, pad = 14, n = Math.max(...Object.values(T).flatMap((t) => t.history.map((p) => p.rank)), 2);
+  const x = (i) => pad + (i / (h.length - 1)) * (W - pad * 2), y = (r) => 10 + ((r - 1) / (n - 1)) * (H - 30);
+  const d = h.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(p.rank).toFixed(1)}`).join(" ");
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" role="img" aria-label="Rank by week: ${h.map((p) => "#" + p.rank).join(", ")}">
+    <line x1="${pad}" x2="${W - pad}" y1="${y(1)}" y2="${y(1)}" stroke="var(--line)" stroke-dasharray="3 4"/>
+    <text x="${W - pad}" y="${y(1) - 3}" text-anchor="end" font-size="10" fill="var(--ink-3)">#1</text>
+    <path d="${d}" fill="none" stroke="var(--accent)" stroke-width="2.25" stroke-linejoin="round" stroke-linecap="round"/>
+    ${h.map((p, i) => `<circle cx="${x(i)}" cy="${y(p.rank)}" r="${i === h.length - 1 ? 4 : 2.5}" fill="var(--accent)"/>`).join("")}
+    ${h.map((p, i) => i === 0 || i === h.length - 1 ? `<text x="${x(i)}" y="${H - 4}" text-anchor="${i ? "end" : "start"}" font-size="10" fill="var(--ink-3)">${short(p.date)}</text>` : "").join("")}
+  </svg>`;
+}
+const rankKpi = (id) => { const r = scopedRank(id); return `<div><div class="kpi-v">${r ? "#" + r.rank : "–"}</div><div class="kpi-l">${r ? (store.get().scope === "national" ? "national" : "in " + store.get().state) + " · of " + r.of : "Not ranked yet"}</div></div>`; };
+
+// ================= screens =================
+function Home() {
+  const id = store.get().mine, t = T[id], r = M.R[id];
+  const fx = fixturesFor(id), next = fx[0];
+  const liveMine = liveList().filter((x) => x.status !== "final" && (x.a === id || x.b === id || store.get().watch.includes(x.a) || store.get().watch.includes(x.b)));
+  return `<section class="screen">
+    ${liveMine.length ? `<div class="section-h"><h2>Live now</h2></div>${liveMine.map(liveCard).join("")}` : ""}
+    <div class="hero">
+      <div class="row" style="align-items:flex-start">${code(id, "lg on-brand")}
+        <div class="grow"><h2>${esc(t.name)}</h2><p class="meta">${t.age} Girls · ${t.state} · My team</p></div></div>
+      <div class="kpis">${rankKpi(id)}
+        <div><div class="kpi-v">${signed(r.power)}</div><div class="kpi-l">Rating (goals)</div></div>
+        <div><div class="kpi-v">${rec(r)}</div><div class="kpi-l">W-D-L</div></div></div>
+      <div class="row" style="gap:8px"><button class="btn-ghost" data-team="${id}">Team page</button>${next ? `<button class="btn-ghost" data-forecast="${id}|${next.opp}">Forecast next game</button>` : ""}</div>
+    </div>
+    ${next ? `<div class="section-h"><h2>Next match</h2></div>${matchCard(next)}` : ""}
+    ${fx.length > 1 ? `<div class="section-h"><h2>Coming up</h2></div><div class="panel rows">${fx.slice(1, 4).map(fixtureRow).join("")}</div>` : ""}
+    <div class="section-h"><h2>Latest results</h2><span>${formHtml(r.form)}</span></div>
+    <div class="panel">${resultsTable(id, 3)}</div>
+    ${store.get().watch.length ? `<div class="section-h"><h2>Also following</h2></div>
+      <div class="panel rows">${store.get().watch.filter((w) => T[w] && M.R[w]).map((w) => { const sr = scopedRank(w); return `<button class="list-item" data-team="${w}">${code(w)}
+        <span class="grow"><span class="ell" style="display:block;font-weight:600">${esc(T[w].name)}</span><span class="xs faint">${sr ? "#" + sr.rank + " " + scopeLabel() + " · " : ""}${rec(M.R[w])}</span></span>${formHtml(M.R[w].form, 3)}${chev}</button>`; }).join("")}</div>` : ""}
+  </section>`;
+}
+
+function Rankings() {
+  const list = RANKED.filter(inScope), nat = store.get().scope === "national";
+  const rows = list.map((id, i) => { const t = T[id], r = M.R[id];
+    return `<tr class="click" data-team="${id}"><td><span class="rk num">${i + 1}</span>${mvHtml(movement(id))}</td>
+      <td style="max-width:0;width:100%"><div class="row">${code(id)}<div class="grow"><span class="ell" style="display:block;font-weight:600">${esc(t.name)}</span><span class="xs faint">${rec(r)} · ${r.games} games${nat ? " · " + t.state : ""}${GROUP.has(id) ? "" : ` · <span class="link-flag" title="No games yet against the teams above and below it">not linked yet*</span>`}</span></div></div></td>
+      <td class="r"><span class="disp num" style="font-size:18px">${signed(r.power)}</span></td>
+      <td class="r" style="white-space:nowrap">${formHtml(r.form, 3)}</td></tr>`; }).join("");
+  const unlinked = list.some((id) => !GROUP.has(id));
+  const un = D.unranked.filter((id) => !RANKED.includes(id) && inScope(id)).map((id) => { const t = T[id], r = M.R[id];
+    return `<button class="list-item" data-team="${id}">${code(id)}<span class="grow"><span class="ell" style="display:block;font-weight:600">${esc(t.name)}</span><span class="xs faint">${rec(r)} · ${r.games} games · ${signed(r.power)} vs own opponents</span></span>${chev}</button>`; }).join("");
+  const liveCount = allGames().filter((g) => g.live).length;
+  return `<section class="screen">
+    <div><h1 class="title">Rankings</h1><p class="sm muted">${store.get().gender === "girls" ? "Girls" : "Boys"} · U12 · ${nat ? "National" : esc(store.get().state)} · results through ${short(D.resultsThrough)}${liveCount ? ` + ${liveCount} entered live` : ""}</p></div>
+    ${filterBar()}
+    ${emptyFor() || `
+    ${nat ? `<div class="notice info">This preview only has California teams with enough games, so the national list matches California. With full data it covers every state.</div>` : ""}
+    <div class="panel"><table class="tbl"><thead><tr><th>#</th><th>Team</th><th class="r">Rating</th><th class="r">Form</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="xs faint">Rating is goals better or worse than an average team in this group. Arrows show the change since last week.</p>
+    ${unlinked ? `<p class="xs faint">* Not linked yet: this team hasn't played anyone connected to the rest of the list, so its spot comes from its own results and is less certain. One game against a shared opponent firms it up.</p>` : ""}
+    ${un ? `<div class="section-h"><h2>Not ranked yet</h2></div>
+    <div class="notice"><b>These teams haven't played anyone connected to the ranked group.</b> Their numbers only compare them with their own opponents. One result against a shared opponent fixes that.</div>
+    <div class="panel rows">${un}</div>` : ""}`}
+    <button class="link" data-about style="align-self:flex-start">How the rating works</button>
+  </section>`;
+}
+
+function Team(id) {
+  const t = T[id], r = M.R[id], fx = fixturesFor(id), s = store.get(), mine = s.mine === id, watching = s.watch.includes(id);
+  const st = rankIn(id, t.state), na = rankIn(id, "national");
+  const evs = [...new Set([...gamesFor(id).map((g) => g.ev), ...fx.map((f) => f.ev)])].filter((e) => EV[e]);
+  return `<section class="screen">
+    <div class="hero">
+      <div class="row" style="align-items:flex-start">${code(id, "lg on-brand")}
+        <div class="grow"><h2>${esc(t.name)}</h2><p class="meta">${t.age} Girls · ${t.state}</p></div>
+        <button class="btn-ghost" data-follow="${id}" aria-pressed="${mine || watching}">${mine ? "My team" : watching ? "Following" : "Follow"}</button></div>
+      ${r ? `<div class="kpis">
+        <div><div class="kpi-v">${st ? "#" + st.rank : "–"}</div><div class="kpi-l">${st ? "in " + t.state + " · of " + st.of : "Not ranked yet"}</div></div>
+        <div><div class="kpi-v">${na ? "#" + na.rank : "–"}</div><div class="kpi-l">${na ? "national · of " + na.of : "National"}</div></div>
+        <div><div class="kpi-v">${rec(r)}</div><div class="kpi-l">W-D-L</div></div></div>` : ""}
+      ${r ? `<div class="row" style="gap:8px">${fx[0] ? `<button class="btn-ghost" data-forecast="${id}|${fx[0].opp}">Forecast a result</button>` : `<button class="btn-ghost" data-forecast="${id}|">Forecast a result</button>`}</div>` : ""}
+    </div>
+    ${!t.focus && !t.userAdded ? `<div class="notice">This preview only includes this team's games against the ${D.counts.focus} teams we have full results for.</div>` : ""}
+    ${t.focus && !GROUP.has(id) ? `<div class="notice"><b>Ranking is less certain.</b> None of this team's opponents have played the rest of the ranked group yet, so its spot comes from its own results. One game against a shared opponent firms it up.</div>` : ""}
+    ${r ? `<div class="panel">
+      <div class="panel-body" style="gap:4px"><div class="row between"><h2 class="disp" style="font-size:20px">Rating ${signed(r.power)}</h2>${formHtml(r.form)}</div>
+        <p class="sm muted">Goals per game ${r.power >= 0 ? "better" : "worse"} than an average team ${GROUP.has(id) ? "in this group" : "among its opponents"}, from ${r.games} games.</p>
+        ${st && t.history.length >= 3 ? `<p class="xs faint" style="margin-top:8px">${t.state} rank by week</p>${spark(id)}` : ""}</div>
+      <div class="stat-grid">
+        <div><div class="stat-v">${r.attack.toFixed(2)}</div><div class="stat-l">Goals scored per game vs average</div></div>
+        <div><div class="stat-v">${r.defense.toFixed(2)}</div><div class="stat-l">Goals allowed per game vs average</div></div>
+        <div><div class="stat-v">${signed(r.sos)}</div><div class="stat-l">Schedule strength</div></div>
+      </div></div>` : ""}
+    ${teamStatsPanel(id)}
+    ${fx.length ? `<div class="section-h"><h2>Fixtures</h2></div>${matchCard(fx[0])}${fx.length > 1 ? `<div class="panel rows">${fx.slice(1).map(fixtureRow).join("")}</div>` : ""}` : ""}
+    <div class="section-h"><h2>Results</h2></div>
+    <div class="panel">${resultsTable(id)}</div>
+    ${evs.length ? `<div class="section-h"><h2>Competitions</h2></div><div class="panel rows">${evs.map((e) => `<button class="list-item" data-event="${e}"><span class="grow"><span style="display:block;font-weight:600">${esc(EV[e].name)}</span><span class="xs faint">${{ league: "League", tournament: "Tournament", showcase: "Showcase", cup: "Cup", friendly: "Friendly or other" }[EV[e].kind] ?? ""}</span></span>${chev}</button>`).join("")}</div>` : ""}
+    <button class="btn" data-report>Report a problem with this team</button>
+    <p class="sm muted" id="report-msg" hidden>In the app this opens a form for a wrong score, duplicate listing, wrong age group or missing game. Verified coaches' fixes to their own team go live right away.</p>
+  </section>`;
+}
+
+function oddsPanel(a, b, f) {
+  const p = predict(a, b);
+  return `<div class="panel">
+      ${f ? `<div class="match-head"><span><b>${day(f.date)}</b>${f.time ? " · " + esc(f.time) : ""}</span><span class="ell" style="max-width:55%;text-align:right">${esc(evName(f.ev))}</span></div>` : ""}
+      <div class="panel-body">
+        <div class="side">${code(a)}<button class="grow ell" style="font-weight:600" data-team="${a}">${esc(T[a].name)}</button><span class="pct ${p.w >= p.l ? "fav" : ""}">${pct(p.w)}</span></div>
+        <div class="side">${code(b)}<button class="grow ell" style="font-weight:600" data-team="${b}">${esc(T[b].name)}</button><span class="pct ${p.l > p.w ? "fav" : ""}">${pct(p.l)}</span></div>
+        <div class="tri" role="img" aria-label="Win ${pct(p.w)}, draw ${pct(p.d)}, loss ${pct(p.l)}"><span style="flex:${p.w}"></span><span style="flex:${p.d}"></span><span style="flex:${p.l}"></span></div>
+        <div class="tri-legend"><span>Draw ${pct(p.d)}</span>${confChip(p)}</div>
+      </div>
+      <div class="stat-grid">
+        <div><div class="stat-v">${p.xh.toFixed(1)}–${p.xa.toFixed(1)}</div><div class="stat-l">Expected goals</div></div>
+        ${p.top.slice(0, 2).map(([i, j, q], k) => `<div><div class="stat-v">${i}–${j}</div><div class="stat-l">${k ? "Next most likely" : "Most likely"} · ${pct(q)}</div></div>`).join("")}
+      </div>
+      ${f && f.date >= TODAY ? `<div class="panel-body" style="border-top:1px solid var(--line);gap:8px"><span class="xs muted">${esc([day(f.date), f.time, f.venue ?? "Venue not posted yet"].filter(Boolean).join(" · "))}</span>${wxBlock(f)}</div>` : f?.venue ? `<div class="panel-body" style="border-top:1px solid var(--line)"><span class="xs muted">${esc(f.venue)}</span></div>` : ""}
+    </div>`;
+}
+function h2hAndCommon(a, b) {
+  const h2h = allGames().filter((g) => (g.a === a && g.b === b) || (g.a === b && g.b === a)).map((g) => g.a === a ? [g.date, g.ga, g.gb, g.ev] : [g.date, g.gb, g.ga, g.ev]);
+  const gd = (id) => { const m = new Map(); gamesFor(id).forEach((g) => m.set(g.opp, [...(m.get(g.opp) ?? []), g.gf - g.ga])); return m; };
+  const ga = gd(a), gb = gd(b), common = [...ga.keys()].filter((k) => gb.has(k) && k !== a && k !== b);
+  const fmt = (xs) => xs.map((d) => d > 0 ? "+" + d : d === 0 ? "0" : "−" + Math.abs(d)).join(", ");
+  return `<div class="section-h"><h2>Head to head</h2></div>
+    <div class="panel">${h2h.length ? `<table class="tbl"><tbody>${h2h.map(([d, x, y, e]) => `<tr><td class="xs muted" style="white-space:nowrap">${short(d)}</td><td class="xs faint">${esc(evName(e))}</td><td class="r"><span class="score">${x}–${y}</span></td></tr>`).join("")}</tbody></table>` : `<div class="panel-body"><p class="sm muted">No meetings in the results we have.</p></div>`}</div>
+    <div class="section-h"><h2>Common opponents</h2></div>
+    <div class="panel">${common.length ? `<table class="tbl"><thead><tr><th>Opponent</th><th class="r">${esc(T[a].code)}</th><th class="r">${esc(T[b].code)}</th></tr></thead><tbody>
+      ${common.map((k) => `<tr class="click" data-team="${k}"><td style="max-width:0;width:100%"><span class="ell" style="display:block">${esc(T[k].name)}</span></td><td class="r num">${fmt(ga.get(k))}</td><td class="r num">${fmt(gb.get(k))}</td></tr>`).join("")}</tbody></table>
+      <div class="panel-body" style="border-top:1px solid var(--line)"><span class="xs faint">Goal difference each team had against the same opponent.</span></div>` : `<div class="panel-body"><p class="sm muted">No shared opponents yet.</p></div>`}</div>`;
+}
+function Match(a, b, date) {
+  const f = D.fixtures.find((x) => x.date === date && ((x.a === a && x.b === b) || (x.a === b && x.b === a)));
+  return `<section class="screen">${f && live[f.id] ? liveCard({ id: f.id, ...live[f.id] }) : oddsPanel(a, b, f)}
+    <button class="btn primary" data-forecast="${a}|${b}">Forecast how a result moves the rankings</button>
+    ${f && f.date >= TODAY && !isDone(f) ? `<button class="btn" data-score="${f.id}">${live[f.id] ? "Open live scoreboard" : "Keep live score for this game"}</button>` : ""}
+    ${h2hAndCommon(a, b)}</section>`;
+}
+
+// ---------- forecast ----------
+function whatIf(team, opp, gf, ga, asOf, beforeModel) {
+  const games = allGames().filter((g) => g.date <= asOf);
+  const before = beforeModel ?? fit(games, asOf);
+  const withGame = [...games, { date: asOf, a: team, b: opp, ga: gf, gb: ga, ev: null }];
+  const after = fit(withGame, asOf);
+  const pool = (m, gs) => { const g = mainGroup(gs); return Object.keys(m.R).filter((id) => (g.has(id) || D.unranked.includes(id)) && m.R[id].games >= 3 && inScope(id)); };
+  const stand = (m, gs, id) => { const list = rankIds(m, pool(m, gs)); const i = list.indexOf(id); return { rank: i < 0 ? null : i + 1, of: list.length, power: m.R[id]?.power ?? 0 }; };
+  const p = predictWith(before, team, opp);
+  return { before, team: { before: stand(before, games, team), after: stand(after, withGame, team) }, opp: { before: stand(before, games, opp), after: stand(after, withGame, opp) }, expected: p.xh - p.xa };
+}
+const scoreline = (m) => (m > 0 ? [m, 0] : m < 0 ? [0, -m] : [1, 1]);
+const rankStr = (s) => (s.rank ? "#" + s.rank : "NR");
+function Forecast() {
+  const s = store.get();
+  const opts = Object.keys(M.R).sort((x, y) => T[x].name.localeCompare(T[y].name));
+  let a = s.fa && M.R[s.fa] ? s.fa : s.mine;
+  let b = s.fb && M.R[s.fb] && s.fb !== a ? s.fb : (fixturesFor(a)[0]?.opp ?? opts.find((x) => x !== a));
+  if (!M.R[b]) b = opts.find((x) => x !== a);
+  const f = D.fixtures.find((x) => ((x.a === a && x.b === b) || (x.a === b && x.b === a)) && x.date >= TODAY && !isDone(x));
+  const asOf = f ? f.date : TODAY;
+  const sel = (key, val, label) => `<div class="field"><label for="${key}">${label}</label><select id="${key}">${opts.map((id) => `<option value="${id}" ${id === val ? "selected" : ""}>${esc(T[id].name)}</option>`).join("")}</select></div>`;
+  const w = whatIf(a, b, s.gf, s.gaa, asOf);
+  const dP = w.team.after.power - w.team.before.power, dR = w.team.before.rank && w.team.after.rank ? w.team.before.rank - w.team.after.rank : null;
+  const res = s.gf > s.gaa ? "win" : s.gf < s.gaa ? "loss" : "draw";
+  let headline;
+  if (!w.team.before.rank && w.team.after.rank) headline = `This game would connect ${esc(T[a].name)} to the ranked group at #${w.team.after.rank}.`;
+  else if (dR > 0) headline = `A ${s.gf}–${s.gaa} ${res} moves ${esc(T[a].name)} up ${dR} to #${w.team.after.rank}.`;
+  else if (dR < 0) headline = `A ${s.gf}–${s.gaa} ${res} drops ${esc(T[a].name)} ${-dR} to #${w.team.after.rank}.`;
+  else headline = `A ${s.gf}–${s.gaa} ${res} keeps ${esc(T[a].name)} at ${rankStr(w.team.after)}, rating ${dP >= 0 ? "up" : "down"} ${Math.abs(dP).toFixed(2)}.`;
+  const ladder = [-3, -2, -1, 0, 1, 2, 3, 5].map((m) => { const [x, y] = scoreline(m); return { m, x, y, r: whatIf(a, b, x, y, asOf, w.before) }; });
+  let be = null; for (let m = -6; m <= 10; m++) { const [x, y] = scoreline(m); const r = whatIf(a, b, x, y, asOf, w.before); if (r.team.after.power >= r.team.before.power) { be = m; break; } }
+  const exp = w.expected, expRow = Math.round(exp);
+  const lbl = (m, x, y) => (m > 0 ? `Win by ${m}` : m < 0 ? `Lose by ${-m}` : "Draw") + ` <span class="faint">(${x}–${y})</span>`;
+  const beText = be == null ? "" : be > 0 ? `${esc(T[a].name)} needs to win by ${be} or more to raise its rating. The model expects about a ${Math.abs(exp).toFixed(1)}-goal ${exp >= 0 ? "win" : "loss"}.`
+    : be === 0 ? `A draw or better keeps ${esc(T[a].name)}'s rating steady. The model expects about a ${Math.abs(exp).toFixed(1)}-goal ${exp >= 0 ? "win" : "loss"}.`
+    : `Even losing by ${-be} wouldn't lower ${esc(T[a].name)}'s rating. The model expects about a ${Math.abs(exp).toFixed(1)}-goal loss.`;
+  return `<section class="screen">
+    <div><h1 class="title">Forecast</h1><p class="sm muted">See the odds, then try a final score to see how it would move the rankings (${scopeLabel()}).</p></div>
+    <div class="panel"><div class="panel-body">${sel("fa", a, "Your team")}${sel("fb", b, "Opponent")}</div></div>
+    ${oddsPanel(a, b, f)}
+    <div class="section-h"><h2>If the final score is…</h2></div>
+    <div class="panel"><div class="panel-body">
+      <div class="stepper">
+        <div class="step-col"><span class="nm ell">${esc(T[a].name)}</span><div class="step"><button data-step="gf|-1" aria-label="One fewer goal for ${esc(T[a].name)}">−</button><span class="v" aria-live="polite">${s.gf}</span><button data-step="gf|1" aria-label="One more goal for ${esc(T[a].name)}">+</button></div></div>
+        <span class="dash">–</span>
+        <div class="step-col"><span class="nm ell">${esc(T[b].name)}</span><div class="step"><button data-step="gaa|-1" aria-label="One fewer goal for ${esc(T[b].name)}">−</button><span class="v">${s.gaa}</span><button data-step="gaa|1" aria-label="One more goal for ${esc(T[b].name)}">+</button></div></div>
+      </div>
+      <p style="font-weight:600">${headline}</p>
+      <div class="move">
+        <div><div class="xs faint">${scopeLabel()} rank now</div><div class="big">${rankStr(w.team.before)}</div></div><div class="arrow">→</div>
+        <div><div class="xs faint">After this game</div><div class="big ${dR > 0 ? "up" : dR < 0 ? "down" : ""}">${rankStr(w.team.after)}</div></div>
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div><div class="stat-v">${signed(w.team.before.power, 2)}</div><div class="stat-l">Rating now</div></div>
+      <div><div class="stat-v ${dP >= 0 ? "up" : "down"}">${signed(dP, 2)}</div><div class="stat-l">Rating change</div></div>
+      <div><div class="stat-v">${rankStr(w.opp.before)} → ${rankStr(w.opp.after)}</div><div class="stat-l">${esc(T[b].code)} rank${w.opp.before.rank ? "" : " (NR = not ranked)"}</div></div>
+    </div></div>
+    <div class="section-h"><h2>Every result at a glance</h2></div>
+    <div class="panel"><table class="tbl"><thead><tr><th>Result</th><th class="r">Rating</th><th class="r">${scopeLabel()} rank</th></tr></thead><tbody>
+      ${ladder.map(({ m, x, y, r }) => { const d = r.team.after.power - r.team.before.power, rk = r.team.after.rank, rb = r.team.before.rank;
+        return `<tr class="${m === expRow ? "hl" : ""}"><td>${lbl(m, x, y)}${m === expRow ? ` <span class="chip ok">Expected</span>` : ""}</td><td class="r num ${d >= 0 ? "up" : "down"}" style="font-weight:600">${signed(d, 2)}</td>
+        <td class="r num" style="white-space:nowrap">${rankStr(r.team.after)}${rb && rk && rb !== rk ? ` <span class="${rk < rb ? "up" : "down"}">${rk < rb ? "▲" : "▼"}${Math.abs(rb - rk)}</span>` : ""}</td></tr>`; }).join("")}
+    </tbody></table>
+    ${beText ? `<div class="panel-body" style="border-top:1px solid var(--line)"><p class="sm muted">${beText} Margins past 6 goals don't count extra.</p></div>` : ""}</div>
+    ${h2hAndCommon(a, b)}
+  </section>`;
+}
+
+// ---------- live ----------
+function Live() {
+  const s = store.get(), followed = [s.mine, ...s.watch];
+  const inProg = liveList().filter((x) => x.status !== "final").sort((x, y) => (y.updatedAt ?? "").localeCompare(x.updatedAt ?? ""));
+  const finals = liveList().filter((x) => x.status === "final").sort((x, y) => (y.updatedAt ?? "").localeCompare(x.updatedAt ?? ""));
+  const soon = D.fixtures.filter((f) => f.date >= TODAY && !live[f.id]).sort((x, y) => Number(followed.includes(y.a) || followed.includes(y.b)) - Number(followed.includes(x.a) || followed.includes(x.b)) || x.date.localeCompare(y.date)).slice(0, 8);
+  const modeNote = liveMode === "shared" ? (canWrite === false ? `<div class="notice info">Scores update live on this page for everyone viewing it. You have view access, so you can watch but not keep score.</div>` : `<div class="notice info"><b>Scores sync live</b> to everyone ${IN_APP ? "using the app" : "viewing this page"}. ${REQ > 1 ? `A final counts in the rankings once ${REQ} people confirm it.` : "A final score feeds straight into the rankings and forecasts."}</div>`)
+    : liveMode === "local" ? (IN_APP ? `<div class="notice">Live sync isn't switched on in this version, so scores and games you add stay on this device.</div>` : `<div class="notice">You're viewing a copy without live sync, so scores you keep here stay on this device. Open the page signed in to share them.</div>`) : "";
+  return `<section class="screen">
+    <div><h1 class="title">Live scores</h1><p class="sm muted">Kept from the sideline by coaches and parents.</p></div>
+    ${modeNote}
+    ${canWrite !== false ? `<button class="btn primary" data-addgame>Add a game or result</button>` : ""}
+    <div class="section-h"><h2>Live now</h2></div>
+    ${inProg.length ? inProg.map(liveCard).join("") : `<div class="panel"><div class="panel-body"><p class="sm muted">No games in progress. Start keeping score on one of the games below and it shows up here.</p></div></div>`}
+    ${finals.length ? `<div class="section-h"><h2>Recent finals</h2></div>${finals.slice(0, 6).map(liveCard).join("")}` : ""}
+    <div class="section-h"><h2>Keep score</h2></div>
+    ${soon.length ? "" : `<div class="panel"><div class="panel-body"><p class="sm muted">No upcoming games yet. Add one above and anyone at the field can keep score.</p></div></div>`}
+    <div class="panel rows" ${soon.length ? "" : "hidden"}>${soon.map((f) => `<button class="list-item" data-score="${f.id}">
+      <span style="width:52px;flex:none" class="xs muted">${short(f.date)}${f.time ? "<br>" + esc(f.time) : ""}</span>
+      <span class="grow"><span class="ell" style="display:block;font-weight:600">${esc(T[f.a].name)}</span><span class="ell" style="display:block;font-weight:600">${esc(T[f.b].name)}</span></span>${chev}</button>`).join("")}</div>
+  </section>`;
+}
+function Scorekeeper(id) {
+  const f = D.fixtures.find((x) => x.id === id), x = live[id];
+  if (!f) return `<section class="screen"><p class="sm muted">Loading this game…</p></section>`;
+  const can = canWrite !== false;
+  const a = f.a, b = f.b, ga = x?.ga ?? 0, gb = x?.gb ?? 0;
+  const ctl = !can ? "" : !x ? `<button class="btn primary" data-live="start|${id}">Start game</button><p class="xs faint">Starts the clock and shows the game as live to everyone following either team.</p>`
+    : x.status === "final" ? `<button class="btn danger" data-live="reopen|${id}">Reopen game</button>`
+    : `<div class="btns"><button class="goal-btn" data-live="goal-a|${id}">Goal ${esc(T[a].code)}</button><button class="goal-btn" data-live="goal-b|${id}">Goal ${esc(T[b].code)}</button></div>
+       <div class="btns"><button class="btn" data-live="undo|${id}" ${x.events?.length ? "" : "disabled"}>Undo last goal</button>
+       ${x.status === "halftime" ? `<button class="btn" data-live="second|${id}">Start 2nd half</button>` : x.half === 2 ? `<button class="btn primary" data-live="final|${id}">Final whistle</button>` : `<button class="btn" data-live="half|${id}">Halftime</button>`}</div>
+       ${x.half === 2 || x.status === "halftime" ? "" : `<button class="link" data-live="final|${id}" style="align-self:center">End game now</button>`}`;
+  const evs = (x?.events ?? []).slice().reverse();
+  return `<section class="screen">
+    <div class="board">
+      <div class="clock">${x ? (x.status === "final" ? "Final" : `<span class="dot"></span> ${esc(minuteOf(x))}`) : esc(day(f.date) + (f.time ? " · " + f.time : ""))}</div>
+      <div class="teams"><div class="t">${code(a, "lg on-brand")}<span class="ell">${esc(T[a].name)}</span></div>
+        <div class="sc">${ga}<span style="color:var(--brand-soft)"> – </span>${gb}</div>
+        <div class="t">${code(b, "lg on-brand")}<span class="ell">${esc(T[b].name)}</span></div></div>
+      <div class="clock">${esc(evName(f.ev))}</div>
+    </div>
+    ${ctl}
+    ${!x && !can ? `<p class="sm muted">This game hasn't started. You'll see the score here as soon as someone starts keeping it.</p>` : ""}
+    ${evs.length ? `<div class="section-h"><h2>Goals</h2></div><div class="panel rows">${evs.map((e) => `<div class="list-item"><span class="num xs muted" style="width:36px">${e.min}′</span><span class="grow" style="font-weight:600">${esc(T[e.t === "a" ? a : b].name)}</span><span class="num faint sm">${e.score}</span></div>`).join("")}</div>` : ""}
+    ${x?.status === "final" ? finalPanel(id) : ""}
+    ${liveMode === "shared" && REQ > 1 ? `<p class="xs faint">A final counts in the rankings once ${REQ} people report the same score: the scorekeeper plus ${REQ - 1 === 1 ? "one other parent or coach" : `${REQ - 1} others`}.</p>` : ""}
+  </section>`;
+}
+function finalPanel(id) {
+  const x = live[id], n = confirmCount(id), need = neededConfirms(), left = need - n;
+  if (left <= 0) return `<div class="notice info"><b>Counted in the rankings.</b> ${need > 1 ? `Confirmed by ${n} people. ` : ""}Check the Rankings and Forecast tabs to see how this result moved things.</div>`;
+  const mine = x.by === DEVICE, did = confirms[id + "~" + DEVICE], didThis = did && did.ga === x.ga && did.gb === x.gb;
+  return `<div class="notice"><b>Waiting for confirmation (${n} of ${need}).</b> This final counts in the rankings once ${left} more ${left === 1 ? "person confirms" : "people confirm"} the score.</div>
+    ${mine ? `<p class="xs faint">You kept score, so ask another parent or coach to open this game in the app and tap Confirm.</p>`
+      : didThis ? `<p class="sm muted">You confirmed this score.</p>`
+      : `<button class="btn primary" data-confirm="${id}">Confirm final: ${esc(T[x.a].code)} ${x.ga}–${x.gb} ${esc(T[x.b].code)}</button><p class="xs faint">Only confirm a score you saw or know is right. If it's wrong, reopen the game and fix it.</p>`}`;
+}
+async function confirmFinal(id) {
+  const x = live[id]; if (!x || x.status !== "final") return;
+  const key = id + "~" + DEVICE, c = { game: id, device: DEVICE, ga: x.ga, gb: x.gb, at: new Date().toISOString() };
+  confirms = { ...confirms, [key]: c }; pend.confirms[key] = c; recompute(); render();
+  toast(counted(id) ? "Confirmed. It now counts in the rankings." : "Thanks. Your confirmation is in.");
+  if (liveMode !== "shared") return;
+  try { await db.doc("confirms/" + key).set(c); }
+  catch { delete pend.confirms[key]; const { [key]: _, ...rest } = confirms; confirms = rest; recompute(); render(); toast("Couldn't send your confirmation. Check your connection and try again."); }
+}
+
+// ---------- add a game or result ----------
+const slugify = (t) => t.toLowerCase().normalize("NFKD").replace(/[^\w\s-]/g, "").trim().replace(/[\s_]+/g, "-").replace(/-+/g, "-").slice(0, 60);
+const fmtTime = (hm) => { const [h, m] = hm.split(":").map(Number); return `${((h + 11) % 12) + 1}:${String(m).padStart(2, "0")} ${h < 12 ? "AM" : "PM"}`; };
+function teamFor(name) {
+  const s = store.get(), n = name.trim().replace(/\s+/g, " ");
+  const key = slugify(n), hit = Object.values(T).find((t) => t.gender === s.gender && slugify(t.name) === key);
+  if (hit) return { id: hit.id };
+  const id = "u-" + slugify(n) + "-" + s.gender[0];
+  if (T[id]) return { id };
+  return { id, team: { id, name: n, code: (n.replace(/[^A-Za-z]/g, "").slice(0, 3) || "TM").toUpperCase(), age: "U12", state: s.state, gender: s.gender } };
+}
+function AddGame() {
+  const s = store.get(), dv = (k, d = "") => esc(draft[k] ?? d);
+  const names = Object.values(T).filter((t) => t.gender === s.gender).map((t) => t.name).sort((x, y) => x.localeCompare(y));
+  const evs = Object.entries(EV).map(([k, e]) => `<option value="${k}" ${(draft.ev ?? "OTH") === k ? "selected" : ""}>${esc(e.name)}</option>`).join("");
+  return `<section class="screen">
+    <div><h1 class="title">Add a game</h1><p class="sm muted">Add an upcoming game so people can keep score on it, or a result that's already been played. Start typing to pick a team, or type a new name to add one.</p></div>
+    <form id="add-game" class="panel" novalidate><div class="panel-body">
+      <datalist id="team-names">${names.map((n) => `<option value="${esc(n)}">`).join("")}</datalist>
+      <div class="field"><label for="g-a">Home team</label><input id="g-a" name="a" list="team-names" autocomplete="off" value="${dv("a")}" placeholder="Start typing a team name"></div>
+      <div class="field"><label for="g-b">Away team</label><input id="g-b" name="b" list="team-names" autocomplete="off" value="${dv("b")}" placeholder="Start typing a team name"></div>
+      <div class="grid2"><div class="field"><label for="g-date">Date</label><input id="g-date" name="date" type="date" value="${dv("date", localToday)}"></div>
+        <div class="field"><label for="g-time">Kickoff (optional)</label><input id="g-time" name="time" type="time" value="${dv("time")}"></div></div>
+      <div class="field"><label for="g-ev">Competition</label><select id="g-ev" name="ev">${evs}</select></div>
+      <div class="field"><span class="lbl">Final score, if it's been played</span><div class="grid2"><input name="ga" inputmode="numeric" aria-label="Home team goals" placeholder="Home" value="${dv("ga")}"><input name="gb" inputmode="numeric" aria-label="Away team goals" placeholder="Away" value="${dv("gb")}"></div></div>
+      <p class="err" id="g-err" hidden></p>
+      <button class="btn primary" type="submit">Add game</button>
+    </div></form>
+    <p class="xs faint">New teams are added as U12 ${s.gender} teams in ${esc(s.state)}, matching your current filter. ${liveMode === "shared" ? "Games and teams you add are shared with everyone using the app." : "Games and teams you add stay on this device."}</p>
+  </section>`;
+}
+async function addGame(fd, err) {
+  const a = String(fd.get("a") ?? "").trim(), b = String(fd.get("b") ?? "").trim(), date = String(fd.get("date") ?? ""), time = String(fd.get("time") ?? "");
+  const ev = EV[fd.get("ev")] ? String(fd.get("ev")) : "OTH", gaS = String(fd.get("ga") ?? "").trim(), gbS = String(fd.get("gb") ?? "").trim();
+  const nameOk = (x) => /^[\p{L}\p{N}' .&()\/-]{2,60}$/u.test(x);
+  if (!nameOk(a) || !nameOk(b)) return err("g-err", "Enter both team names (2 to 60 characters).");
+  if (a.toLowerCase() === b.toLowerCase()) return err("g-err", "Pick two different teams.");
+  if (!/^\d{4}-\d\d-\d\d$/.test(date)) return err("g-err", "Pick a date.");
+  const ahead = (Date.parse(date) - Date.parse(localToday)) / 864e5;
+  if (ahead > 120 || ahead < -365) return err("g-err", "Pick a date within the past year or the next four months.");
+  const hasScore = gaS !== "" || gbS !== "";
+  if (hasScore) {
+    if (!/^\d{1,2}$/.test(gaS) || !/^\d{1,2}$/.test(gbS) || +gaS > 30 || +gbS > 30) return err("g-err", "Enter both scores as whole numbers, or leave both blank.");
+    if (date > localToday) return err("g-err", "A game that hasn't happened yet can't have a final score.");
+  } else if (date < localToday) return err("g-err", "For a game that's already been played, enter the final score.");
+  const A = teamFor(a), B = teamFor(b);
+  const f = { date, time: time ? fmtTime(time) : null, a: A.id, b: B.id, ev }, id = fxId(f);
+  if (D.fixtures.some((x) => x.id === id) || live[id] || D.games.some((g) => pairKey(g) === pairKey(f))) return err("g-err", "That game is already in the app.");
+  const writes = [];
+  for (const t of [A.team, B.team]) if (t) { userTeams = { ...userTeams, [t.id]: t }; pend.teams[t.id] = t; writes.push(["teams/" + t.id, t]); }
+  userFx = { ...userFx, [id]: f }; pend.fixtures[id] = f; writes.push(["fixtures/" + id, f]);
+  let body = null;
+  if (hasScore) { const now = new Date().toISOString(); body = { a: A.id, b: B.id, date, ev, ga: +gaS, gb: +gbS, status: "final", half: 2, kickoffAt: now, events: [], updatedAt: now, by: DEVICE }; live[id] = body; pend.live[id] = body; }
+  applyCrowd(); recompute(); draft = {}; stack.pop();
+  toast(!hasScore ? "Game added. Anyone can keep score on it now." : counted(id) ? "Result added. Rankings updated." : "Result added. It counts once someone else confirms it.");
+  go({ type: "score", id });
+  if (liveMode === "shared") {
+    try { for (const [path, data] of writes) await db.doc(path).set(data); }
+    catch { toast("Couldn't share that game. Check your connection and try again."); return; }
+  } else persistCrowd();
+  if (body) await saveLive(id, body);
+}
+
+async function liveAction(kind, id) {
+  const f = D.fixtures.find((x) => x.id === id), now = new Date().toISOString();
+  const x = live[id] ? JSON.parse(JSON.stringify(live[id])) : null;
+  const minute = (y) => { const st = y.half === 2 ? y.secondAt : y.kickoffAt; const m = Math.max(1, Math.floor((Date.now() - Date.parse(st)) / 60000) + 1); return y.half === 2 ? Math.min(HALF + m, HALF * 2) : Math.min(m, HALF); };
+  let body = x;
+  if (kind === "start") body = { a: f.a, b: f.b, date: f.date, ev: f.ev, ga: 0, gb: 0, status: "live", half: 1, kickoffAt: now, events: [], updatedAt: now, by: DEVICE };
+  else if (!x) return;
+  else if (kind === "goal-a" || kind === "goal-b") { const t = kind === "goal-a" ? "a" : "b"; body[t === "a" ? "ga" : "gb"]++; body.events = [...(x.events ?? []), { t, min: minute(x), score: `${body.ga}–${body.gb}` }]; }
+  else if (kind === "undo") { const e = (x.events ?? []).pop(); if (!e) return; body.events = x.events; body[e.t === "a" ? "ga" : "gb"] = Math.max(0, body[e.t === "a" ? "ga" : "gb"] - 1); }
+  else if (kind === "half") body.status = "halftime";
+  else if (kind === "second") { body.status = "live"; body.half = 2; body.secondAt = now; }
+  else if (kind === "final") { body.status = "final"; body.by = DEVICE; }
+  else if (kind === "reopen") { body.status = "live"; }
+  body.updatedAt = now;
+  live[id] = body; pend.live[id] = body; recompute(); render();
+  if (kind === "final") toast(counted(id) ? "Final saved. Rankings updated." : "Final saved. It counts once someone else confirms it.");
+  await saveLive(id, body);
+}
+const pending = {}, busy = {};
+async function saveLive(id, body) {
+  if (liveMode !== "shared") { try { localStorage.setItem("uf-live-local", JSON.stringify(live)); } catch {} return; }
+  pending[id] = body; if (busy[id]) return; busy[id] = true;
+  try {
+    while (pending[id]) { const b = pending[id]; delete pending[id]; await db.doc("live/" + id).set(b); }
+  } catch (e) {
+    if (e?.code === "invalid_argument") { canWrite = false; toast("You have view access, so this score wasn't shared."); render(); }
+    else if (e?.code === "quota_exceeded") toast("The live score store is full. Clear old games from About.");
+    else toast("Couldn't save the score. Check your connection and try again.");
+  } finally { busy[id] = false; }
+}
+
+// ---------- players (kept on this device only) ----------
+const PL = (() => {
+  let s = { players: [], lines: [] };
+  try { const v = JSON.parse(localStorage.getItem("uf-players-v1") || "null"); if (v) s = v; } catch {}
+  return { get: () => s, save() { try { localStorage.setItem("uf-players-v1", JSON.stringify(s)); } catch {} } };
+})();
+function samplePlayers() {
+  const team = store.get().mine, games = gamesFor(team).slice(0, 5);
+  const ps = [["Sample player", "1", 9, "FWD"], ["Sample player", "2", 10, "MID"], ["Sample player", "3", 4, "DEF"], ["Sample player", "4", 1, "GK"]]
+    .map(([f, i, j, pos], k) => ({ id: "sample" + k, teamId: team, first: f, initial: i, jersey: j, pos, sample: true }));
+  const pat = [[1, 0], [0, 1], [2, 1], [0, 0], [1, 1]], lines = [];
+  games.forEach((g, gi) => ps.forEach((p, k) => lines.push({ playerId: p.id, opp: g.opp, date: g.date, minutes: k === 3 ? 70 : 50,
+    goals: p.pos === "FWD" ? pat[gi][0] : p.pos === "MID" ? pat[(gi + 1) % 5][1] : 0, assists: p.pos === "MID" ? pat[gi][0] : p.pos === "FWD" ? pat[gi][1] : 0,
+    saves: k === 3 ? 3 + gi % 3 : null, conceded: k === 3 ? g.ga : null })));
+  return { players: ps, lines };
+}
+const dispName = (p) => p.sample ? `${p.first} ${p.initial}` : `${p.first} ${p.initial}.`;
+function rankPlayers(players, lines) {
+  const w = (opp) => Math.min(2, Math.max(0.5, Math.exp(0.25 * (M.R[opp]?.power ?? 0))));
+  const rows = players.map((p) => {
+    const ls = lines.filter((l) => l.playerId === p.id && l.minutes > 0), mins = ls.reduce((s, l) => s + l.minutes, 0);
+    const per60 = (x) => (mins >= 60 ? (x * 60) / mins : 0);
+    return { p, games: ls.length, mins, goals: ls.reduce((s, l) => s + l.goals, 0), assists: ls.reduce((s, l) => s + l.assists, 0),
+      impact: per60(ls.reduce((s, l) => s + (l.goals + 0.6 * l.assists) * w(l.opp), 0)),
+      saves60: per60(ls.reduce((s, l) => s + (l.saves ?? 0), 0)), ga60: per60(ls.reduce((s, l) => s + (l.conceded ?? 0), 0)), prov: ls.length < 3 };
+  });
+  const sort = (xs, key) => xs.filter((r) => r.mins > 0).sort((a, b) => a.prov - b.prov || key(b) - key(a) || b.mins - a.mins);
+  return { field: sort(rows.filter((r) => r.p.pos !== "GK"), (r) => r.impact), keepers: sort(rows.filter((r) => r.p.pos === "GK"), (r) => -r.ga60 * 10 + r.saves60) };
+}
+function Players() {
+  const s = store.get(), own = PL.get(), usingSample = own.players.length === 0;
+  const src = usingSample ? samplePlayers() : own;
+  const players = src.players.filter((p) => inScope(p.teamId));
+  const r = rankPlayers(players, src.lines), list = s.pkind === "gk" ? r.keepers : r.field;
+  const rows = list.map((x, i) => `<tr class="click" data-player="${x.p.id}"><td><span class="rk num">${i + 1}</span></td>
+    <td style="max-width:0;width:100%"><div class="row">${code(x.p.teamId)}<div class="grow"><span class="ell" style="display:block;font-weight:600">${esc(dispName(x.p))}${x.p.sample ? ` <span class="chip plain">Sample</span>` : ""}</span><span class="xs faint">${x.p.pos}${x.p.jersey ? " · #" + x.p.jersey : ""}${x.prov ? " · few games" : ""}</span></div></div></td>
+    <td class="r num">${x.games}</td>${s.pkind === "gk" ? `<td class="r num">${x.ga60.toFixed(2)}</td><td class="r num">${x.saves60.toFixed(1)}</td>` : `<td class="r num">${x.goals}</td><td class="r num">${x.assists}</td><td class="r disp num" style="font-size:17px">${x.impact.toFixed(2)}</td>`}</tr>`).join("");
+  return `<section class="screen">
+    <div><h1 class="title">Players</h1><p class="sm muted">${s.gender === "girls" ? "Girls" : "Boys"} · U12 · ${scopeLabel()}</p></div>
+    ${filterBar()}
+    ${usingSample ? `<div class="notice info"><b>These are sample players</b> to show how the leaderboard works. Add your own players and they replace the samples.</div>` : ""}
+    <div class="seg" role="group" aria-label="Player type"><button data-set='{"pkind":"field"}' aria-pressed="${s.pkind !== "gk"}">Field players</button><button data-set='{"pkind":"gk"}' aria-pressed="${s.pkind === "gk"}">Goalkeepers</button></div>
+    ${rows ? `<div class="panel"><table class="tbl"><thead><tr><th>#</th><th>Player</th><th class="r">GP</th>${s.pkind === "gk" ? `<th class="r">GA/60</th><th class="r">Sv/60</th>` : `<th class="r">G</th><th class="r">A</th><th class="r">Impact</th>`}</tr></thead><tbody>${rows}</tbody></table></div>`
+      : `<div class="panel"><div class="panel-body"><p class="sm muted">${players.length ? "No stats for these players yet. Open a player to add game stats." : "No players on teams in this view. Change the filters or add a player."}</p></div></div>`}
+    <p class="xs faint">${s.pkind === "gk" ? "Goalkeepers rank by goals allowed per 60 minutes, then saves." : "Impact is goals plus 0.6 per assist, per 60 minutes, with contributions against stronger teams counting more."} Players need 3 games to rank ahead of players with fewer.</p>
+    <button class="btn primary" data-addplayer>Add a player</button>
+    <p class="xs faint">Players you add are saved on this device only. In the app, parents manage their child's profile, it's private unless they make it public, and leaderboards show first name and last initial only.</p>
+  </section>`;
+}
+let draft = {};
+function AddPlayer() {
+  const focus = Object.keys(T).filter((id) => T[id].focus).sort((x, y) => T[x].name.localeCompare(T[y].name));
+  const v = (k, d = "") => esc(draft[k] ?? d);
+  return `<section class="screen"><h1 class="title">Add a player</h1>
+    <form id="add-player" class="panel" novalidate><div class="panel-body">
+      <div class="grid2"><div class="field"><label for="p-first">First name</label><input id="p-first" name="first" autocomplete="off" maxlength="30" value="${v("first")}"></div>
+        <div class="field"><label for="p-initial">Last initial</label><input id="p-initial" name="initial" maxlength="1" autocomplete="off" value="${v("initial")}"></div></div>
+      <div class="grid2"><div class="field"><label for="p-jersey">Jersey #</label><input id="p-jersey" name="jersey" inputmode="numeric" maxlength="2" value="${v("jersey")}"></div>
+        <div class="field"><label for="p-pos">Position</label><select id="p-pos" name="pos">${[["FWD", "Forward"], ["MID", "Midfield"], ["DEF", "Defense"], ["GK", "Goalkeeper"]].map(([k, l]) => `<option value="${k}" ${(draft.pos ?? "FWD") === k ? "selected" : ""}>${l}</option>`).join("")}</select></div></div>
+      <div class="field"><label for="p-team">Team</label><select id="p-team" name="team">${focus.map((id) => `<option value="${id}" ${(draft.team ?? store.get().mine) === id ? "selected" : ""}>${esc(T[id].name)}</option>`).join("")}</select></div>
+      <p class="err" id="p-err" hidden></p>
+      <button class="btn primary" type="submit">Save player</button>
+      <p class="xs faint">Only a first name and last initial are stored, on this device.</p>
+    </div></form></section>`;
+}
+function PlayerScreen(pid) {
+  const own = PL.get(), src = own.players.length ? own : samplePlayers();
+  const p = src.players.find((x) => x.id === pid); if (!p) return `<section class="screen"><p>Player not found.</p></section>`;
+  const ls = src.lines.filter((l) => l.playerId === pid).sort((a, b) => b.date.localeCompare(a.date));
+  const games = gamesFor(p.teamId).filter((g) => !ls.some((l) => l.date === g.date && l.opp === g.opp));
+  const gk = p.pos === "GK";
+  return `<section class="screen">
+    <div class="hero"><div class="row">${code(p.teamId, "lg on-brand")}<div class="grow"><h2>${esc(dispName(p))}</h2><p class="meta">${p.pos}${p.jersey ? " · #" + p.jersey : ""} · ${esc(T[p.teamId].name)}</p></div></div></div>
+    ${p.sample ? `<div class="notice info">This is a sample player. Add your own players from the Players tab.</div>` : ""}
+    <div class="section-h"><h2>Games</h2></div>
+    <div class="panel">${ls.length ? `<table class="tbl"><thead><tr><th>Date</th><th>Opponent</th><th class="r">Min</th>${gk ? `<th class="r">Sv</th><th class="r">GA</th>` : `<th class="r">G</th><th class="r">A</th>`}</tr></thead><tbody>
+      ${ls.map((l) => `<tr><td class="xs muted" style="white-space:nowrap">${short(l.date)}</td><td style="max-width:0;width:100%"><span class="ell" style="display:block">${esc(T[l.opp]?.name ?? "")}</span></td><td class="r num">${l.minutes}</td>${gk ? `<td class="r num">${l.saves ?? 0}</td><td class="r num">${l.conceded ?? 0}</td>` : `<td class="r num">${l.goals}</td><td class="r num">${l.assists}</td>`}</tr>`).join("")}</tbody></table>` : `<div class="panel-body"><p class="sm muted">No games logged yet.</p></div>`}</div>
+    ${!p.sample && games.length ? `<div class="section-h"><h2>Add game stats</h2></div>
+    <form id="add-stats" class="panel" data-pid="${pid}" novalidate><div class="panel-body">
+      <div class="field"><label for="s-game">Game</label><select id="s-game" name="game">${games.map((g, i) => `<option value="${i}">${short(g.date)} vs ${esc(T[g.opp].name)} (${g.gf}–${g.ga})</option>`).join("")}</select></div>
+      <div class="grid3"><div class="field"><label for="s-min">Minutes</label><input id="s-min" name="minutes" inputmode="numeric" value="${esc(draft.minutes ?? "50")}"></div>
+      ${gk ? `<div class="field"><label for="s-sv">Saves</label><input id="s-sv" name="saves" inputmode="numeric" value="${esc(draft.saves ?? "0")}"></div><div class="field"><label for="s-ga">Goals allowed</label><input id="s-ga" name="conceded" inputmode="numeric" value="${esc(draft.conceded ?? "0")}"></div>`
+        : `<div class="field"><label for="s-g">Goals</label><input id="s-g" name="goals" inputmode="numeric" value="${esc(draft.goals ?? "0")}"></div><div class="field"><label for="s-a">Assists</label><input id="s-a" name="assists" inputmode="numeric" value="${esc(draft.assists ?? "0")}"></div>`}</div>
+      <p class="err" id="s-err" hidden></p>
+      <button class="btn primary" type="submit">Save stats</button>
+    </div></form>` : ""}
+    ${!p.sample ? `<button class="btn danger" data-delplayer="${pid}" id="del-btn">Remove player</button><div id="del-confirm" hidden class="btns"><button class="btn" data-delcancel>Keep</button><button class="btn danger" data-delyes="${pid}">Remove for good</button></div>` : ""}
+  </section>`;
+}
+
+function EventScreen(e) {
+  const ev = EV[e], played = allGames().filter((g) => g.ev === e), fx = D.fixtures.filter((f) => f.ev === e && f.date >= TODAY && !isDone(f));
+  return `<section class="screen">
+    <div><h1 class="title">${esc(ev.name)}</h1><p class="sm muted">${{ league: "League", tournament: "Tournament", showcase: "Showcase", cup: "Cup" }[ev.kind]}</p></div>
+    <div class="notice">Shows the games in this preview's data for this competition, not the full schedule.</div>
+    ${fx.length ? `<div class="section-h"><h2>Upcoming</h2></div><div class="panel rows">${fx.map((f) => { const p = predict(f.a, f.b);
+      return `<button class="list-item" data-match="${f.a}|${f.b}|${f.date}" style="align-items:flex-start"><span style="width:52px;flex:none" class="xs muted">${short(f.date)}</span>
+        <span class="grow"><span class="row between"><span class="ell" style="font-weight:600">${esc(T[f.a].name)}</span><b class="num sm">${pct(p.w)}</b></span>
+        <span class="row between"><span class="ell" style="font-weight:600">${esc(T[f.b].name)}</span><b class="num sm">${pct(p.l)}</b></span>
+        <span class="xs faint" style="display:flex;gap:8px;align-items:center">${wxMini(f)}<span>Draw ${pct(p.d)}</span></span></span>${chev}</button>`; }).join("")}</div>` : ""}
+    ${played.length ? `<div class="section-h"><h2>Results</h2></div><div class="panel"><table class="tbl"><tbody>${played.sort((x, y) => y.date.localeCompare(x.date)).map((g) => `<tr><td class="xs muted" style="white-space:nowrap">${short(g.date)}</td>
+      <td style="max-width:0;width:50%"><span class="ell" style="display:block;text-align:right">${esc(T[g.a].name)}</span></td>
+      <td class="num" style="text-align:center;font-weight:700;white-space:nowrap">${g.ga}–${g.gb}</td>
+      <td style="max-width:0;width:50%"><span class="ell" style="display:block">${esc(T[g.b].name)}</span></td></tr>`).join("")}</tbody></table></div>` : ""}
+  </section>`;
+}
+function About() {
+  const c = D.counts, liveFinals = liveList().filter((x) => x.status === "final").length;
+  const items = [
+    ["Every result counts, including the score", "Ratings use the score of every league, tournament and showcase game. Recent games count more than old ones."],
+    ["Running up the score doesn't help", "Margins past six goals are trimmed, so an 11–0 counts the same as a 6–0."],
+    ["The rating is in goals", "+1.5 means the team would beat an average team in the group by about a goal and a half. The same numbers produce the match odds and forecasts, so they always agree."],
+    ["Beat the expectation to move up", "Winning isn't always enough. If the model expects you to win by 3 and you win by 1, your rating dips slightly. The Forecast tab shows the margin you need."],
+    ["Teams are only ranked against teams they're connected to", "Two teams can be compared when there's a chain of games between them. Teams without one are listed separately instead of being given a guessed rank."],
+    ["Age groups follow the school year", "Since 2026–27, age groups use an August 1 cutoff. U12 is players born August 2014 to July 2015."],
+  ];
+  return `<section class="screen">
+    <div><h1 class="title">About Youth Soccer Rankings</h1><p class="sm muted">Season ${D.season}</p></div>
+    <div class="panel"><div class="stat-grid" style="border-top:0">
+      <div><div class="stat-v">${c.games}</div><div class="stat-l">Games played</div></div>
+      <div><div class="stat-v">${c.fixtures}</div><div class="stat-l">Upcoming fixtures</div></div>
+      <div><div class="stat-v">${c.teams}</div><div class="stat-l">Teams</div></div></div>
+      <div class="panel-body" style="border-top:1px solid var(--line)"><p class="sm muted">Real U12 girls results from ${short(D.resultsFrom)} to ${short(D.resultsThrough)}, entered for ${c.focus} California teams and their opponents. ${c.duplicatesRemoved} games appeared on both teams' pages and every pair agreed on the score. Rankings, odds and forecasts are computed by this app.${liveFinals ? ` ${liveFinals} more result${liveFinals > 1 ? "s were" : " was"} entered live on this page.` : ""}</p></div></div>
+    ${items.map(([h, b]) => `<div class="panel"><div class="panel-body" style="gap:4px"><h2 class="disp" style="font-size:18px">${h}</h2><p class="sm muted">${b}</p></div></div>`).join("")}
+    ${liveList().length && canWrite !== false && !(IN_APP && liveMode === "shared") ? `<button class="btn danger" data-clearlive>Clear all live scores</button><div id="clear-confirm" hidden class="btns"><button class="btn" data-clearcancel>Keep them</button><button class="btn danger" data-clearyes>Clear for everyone</button></div>` : ""}
+  </section>`;
+}
+
+// ================= shell =================
+const MARK = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.6l9 2.8v6.8c0 5.4-3.7 9-9 11.2C6.7 20.2 3 16.6 3 11.2V4.4z" fill="#22C384" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><path d="M8.4 9.3L12 6.9l3.6 2.4" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="14.6" r="3.9" fill="#fff"/><path d="M12 12.9l1.6 1.2-.6 1.9h-2l-.6-1.9z" fill="#0B1B2E"/></svg>`;
+
+// ================= Pro: game stats with video proof, pricing (demo) =================
+const PRO = (() => {
+  let s = { pro: false, founder: null, plan: null, teamCode: null, joined: false, events: {}, videos: {}, poss: {}, votes: {} };
+  try { const v = JSON.parse(localStorage.getItem("ysr-pro-demo-v1") || "null"); if (v) s = { ...s, ...v }; } catch {}
+  return { get: () => s, set(p) { s = { ...s, ...p }; try { localStorage.setItem("ysr-pro-demo-v1", JSON.stringify(s)); } catch {} } };
+})();
+const FOUNDER_TOTAL = 100;
+const KINDS = { goal: "Goal", shot_on_target: "Shot on target", shot: "Shot", save: "Save", pk_made: "PK scored", pk_missed: "PK missed", pk_saved: "PK saved", corner: "Corner", foul: "Foul" };
+const PROOF = { self: ["self", "Entered"], clip: ["clip", "On video"], verified: ["verified", "Verified"] };
+const gameKey = (a, b, date) => [a, b].sort().join("~") + "@" + date;
+const findGame = (a, b, date) => allGames().find((g) => g.date === date && ((g.a === a && g.b === b) || (g.a === b && g.b === a)));
+const clock = (sec) => `${Math.floor(sec / 60)}:${String(Math.floor(sec % 60)).padStart(2, "0")}`;
+const parseClockStr = (v) => { const p = String(v).trim().split(":").map(Number); return !v || p.some((x) => !Number.isFinite(x) || x < 0) ? null : p.reduce((a, x) => a * 60 + x, 0); };
+
+// Example stats for the followed team's games, built to agree with each real final score.
+function seedExample(key, g) {
+  const r = (n) => { let h = parseInt(hash(key + n), 36) || 1; return (h % 1000) / 1000; };
+  const ev = [], kick = 95;
+  let i = 0;
+  const add = (team, kind, minute, proof) => {
+    const ts = kick + (minute - 1) * 60 + Math.floor(r(i) * 55) + (minute > HALF ? 420 : 0);
+    const confirms = proof === "verified" ? 2 + Math.floor(r(i + 7) * 2) : proof === "clip" ? Math.floor(r(i + 9) * 2) : 0;
+    ev.push({ id: key + "#" + i++, team, kind, minute, player: String(2 + Math.floor(r(i + 3) * 20)), ts: proof === "self" ? null : ts, video: proof === "self" ? null : "v1", confirms, disputes: 0, mine: false, example: true });
+  };
+  const side = (team, goals, oppGoals) => {
+    const pk = goals > 0 && r(team + "pk") < .35;
+    for (let k = 0; k < goals; k++) add(team, pk && k === 0 ? "pk_made" : "goal", 4 + Math.floor(r(team + k) * 64), r(team + "g" + k) < .55 ? "verified" : "clip");
+    const shots = goals + 2 + Math.floor(r(team + "s") * 6);
+    for (let k = goals; k < shots; k++) add(team, r(team + "t" + k) < .5 ? "shot_on_target" : "shot", 3 + Math.floor(r(team + "m" + k) * 66), r(team + "p" + k) < .6 ? "clip" : "self");
+    if (r(team + "miss") < .25) add(team, "pk_missed", 10 + Math.floor(r(team + "pm") * 55), "clip");
+  };
+  side(g.a, g.ga, g.gb); side(g.b, g.gb, g.ga);
+  // saves come from the other side's shots on target that didn't go in
+  for (const t of [g.a, g.b]) {
+    const opp = t === g.a ? g.b : g.a;
+    ev.filter((e) => e.team === opp && e.kind === "shot_on_target").forEach((e, k) => add(t, "save", e.minute, k % 3 === 0 ? "verified" : "clip"));
+  }
+  ev.sort((x, y) => x.minute - y.minute);
+  const p = 50 + Math.round((g.ga - g.gb) * 3 + (r("poss") - .5) * 10);
+  return { events: ev, videos: [{ id: "v1", provider: "Veo", url: null, kick, example: true }], poss: { a: g.a, pct: Math.max(30, Math.min(70, p)), source: "Veo Analytics" } };
+}
+function gameData(a, b, date) {
+  const key = gameKey(a, b, date), g = findGame(a, b, date), st = PRO.get();
+  const followed = g && (g.a === store.get().mine || g.b === store.get().mine);
+  const base = followed ? seedExample(key, g) : { events: [], videos: [], poss: null };
+  const events = [...base.events, ...(st.events[key] || [])].map((e) => {
+    const v = st.votes[e.id];
+    const confirms = e.confirms + (v === "confirm" ? 1 : 0), disputes = e.disputes + (v === "dispute" ? 1 : 0);
+    const proof = !e.video || e.ts == null ? "self" : confirms >= 2 && confirms > disputes ? "verified" : "clip";
+    return { ...e, confirms, disputes, proof };
+  }).sort((x, y) => (x.minute ?? 999) - (y.minute ?? 999));
+  return { key, g, followed, events, videos: [...base.videos, ...(st.videos[key] || [])], poss: st.poss[key] || base.poss };
+}
+function line(events, team) {
+  const m = events.filter((e) => e.team === team), n = (...k) => m.filter((e) => k.includes(e.kind)).length;
+  const goals = n("goal", "pk_made"), onT = goals + n("shot_on_target");
+  return { goals, shots: onT + n("shot", "pk_missed", "pk_saved"), onT, saves: n("save"), pkMade: n("pk_made"), pkMiss: n("pk_missed", "pk_saved"), corners: n("corner"), fouls: n("foul"), proven: m.filter((e) => e.proof !== "self").length, total: m.length };
+}
+function teamTotals(id) {
+  let t = { games: 0, goals: 0, goalsV: 0, shots: 0, saves: 0, savesV: 0, pkMade: 0, pkMiss: 0, possSum: 0, possN: 0 };
+  for (const g of gamesFor(id)) {
+    const d = gameData(id, g.opp, g.date); if (!d.events.length) continue;
+    t.games++;
+    const L = line(d.events, id), mine = d.events.filter((e) => e.team === id);
+    t.goals += L.goals; t.shots += L.shots; t.saves += L.saves; t.pkMade += L.pkMade; t.pkMiss += L.pkMiss;
+    t.goalsV += mine.filter((e) => ["goal", "pk_made"].includes(e.kind) && e.proof !== "self").length;
+    t.savesV += mine.filter((e) => e.kind === "save" && e.proof !== "self").length;
+    if (d.poss) { t.possSum += d.poss.a === id ? d.poss.pct : 100 - d.poss.pct; t.possN++; }
+  }
+  return t;
+}
+
+function teamStatsPanel(id) {
+  const t = teamTotals(id), pro = PRO.get().pro;
+  if (!t.games) return `<div class="section-h"><h2>Team stats</h2><span class="chip pro-chip">Pro</span></div>
+    <div class="notice info">No stats entered yet. Open any result below and add goals, saves, shots and PKs with a link to the game video.</div>`;
+  const rows = [["Goals", t.goals, t.goalsV], ["Shots", t.shots, null], ["Saves", t.saves, t.savesV], ["PKs made / missed", `${t.pkMade} / ${t.pkMiss}`, null], ["Avg possession", t.possN ? Math.round(t.possSum / t.possN) + "%" : "–", null]];
+  return `<div class="section-h"><h2>Team stats</h2><span class="chip pro-chip">Pro</span></div>
+    <div class="panel ${pro ? "" : "locked"}">
+      <table class="tbl"><thead><tr><th>${t.games} games tracked</th><th class="r">Total</th><th class="r">On video</th></tr></thead><tbody>
+      ${rows.map(([l, v, p]) => `<tr><td>${l}</td><td class="r"><b>${v}</b></td><td class="r">${p == null ? `<span class="faint">–</span>` : `<span class="proof-n">${p}</span>`}</td></tr>`).join("")}
+      </tbody></table>
+      ${pro ? "" : `<div class="lock"><p><b>Stats every parent can trust.</b> Each goal and save links to the moment in the game video.</p><button class="btn primary" data-x="gopro">See Pro · first 100 free</button></div>`}
+    </div>
+    <p class="xs faint">Example stats for this preview, built to match each real final score.</p>`;
+}
+
+function GameStats(a, b, date) {
+  const d = gameData(a, b, date), g = d.g, pro = PRO.get().pro;
+  if (!g) return `<section class="screen"><div class="notice">Game not found.</div></section>`;
+  const H = line(d.events, g.a), A = line(d.events, g.b);
+  const total = H.total + A.total, proven = H.proven + A.proven;
+  const okScore = H.goals === g.ga && A.goals === g.gb;
+  const hp = d.poss ? (d.poss.a === g.a ? d.poss.pct : 100 - d.poss.pct) : null;
+  const box = [["Goals", H.goals, A.goals], ["Shots", H.shots, A.shots], ["On target", H.onT, A.onT], ["Saves", H.saves, A.saves], ["PKs made", H.pkMade, A.pkMade], ["PKs missed", H.pkMiss, A.pkMiss]];
+  const draftTeam = PRO.get().draftTeam && [g.a, g.b].includes(PRO.get().draftTeam) ? PRO.get().draftTeam : a;
+  const head = `<div class="board">
+      <div class="meta" style="color:var(--brand-soft);font-size:13px;text-align:center">${esc(evName(g.ev))} · ${day(g.date)}</div>
+      <div class="teams"><button class="t" data-team="${g.a}">${code(g.a, "lg on-brand")}<span>${esc(T[g.a].name)}</span></button>
+        <div class="sc">${g.ga}–${g.gb}</div>
+        <button class="t" data-team="${g.b}">${code(g.b, "lg on-brand")}<span>${esc(T[g.b].name)}</span></button></div>
+      <div class="clock">Final</div></div>`;
+  if (!pro) return `<section class="screen">${head}
+    <div class="panel locked">
+      <div class="boxsc">${box.slice(0, 4).map(([l, h, x]) => `<span class="bv">${h}</span><span class="bl">${l}</span><span class="bv r">${x}</span>`).join("")}</div>
+      <div class="lock"><p><b>See every goal, save and PK, with video proof.</b> Tap a stat to watch that moment in the Veo, Trace or phone video. Other parents confirm it.</p>
+        <button class="btn primary" data-x="gopro">Unlock with Pro · first 100 free</button></div>
+    </div></section>`;
+
+  const vids = d.videos;
+  return `<section class="screen">${head}
+    ${d.followed ? `<div class="notice info"><b>Example stats.</b> The scores are real; the stats are made up to show how the feature works.</div>` : ""}
+    <div class="panel">
+      <div class="boxsc hdr"><span class="bv">${esc(T[g.a].code)}</span><span class="bl">Box score</span><span class="bv r">${esc(T[g.b].code)}</span></div>
+      <div class="boxsc">${box.map(([l, h, x]) => `<span class="bv">${h}</span><span class="bl">${l}</span><span class="bv r">${x}</span>`).join("")}</div>
+      <div class="panel-body" style="border-top:1px solid var(--line);gap:6px">
+        <div class="boxsc" style="padding:0"><span class="bv">${hp == null ? "–" : Math.round(hp) + "%"}</span><span class="bl">Possession</span><span class="bv r">${hp == null ? "–" : Math.round(100 - hp) + "%"}</span></div>
+        ${hp != null ? `<div class="pbar" role="img" aria-label="Possession ${Math.round(hp)} to ${Math.round(100 - hp)}"><i style="width:${hp}%"></i></div><p class="xs faint">Source: ${esc(d.poss.source)}</p>` : `<p class="xs faint">No possession yet. Track it live or copy it from Veo Analytics below.</p>`}
+      </div>
+    </div>
+    <div class="notice ${total && proven === total && okScore ? "info" : ""}">${total ? `<b>${proven} of ${total}</b> stats are linked to video.` : "No stats yet."}${total && !okScore ? ` Entered goals (${H.goals}–${A.goals}) don't match the final score.` : ""}</div>
+
+    <div class="section-h"><h2>Play by play</h2></div>
+    <div class="panel rows">${d.events.length ? d.events.map((e) => {
+      const v = vids.find((x) => x.id === e.video), [cls, lab] = PROOF[e.proof];
+      return `<div class="pbp"><span class="mn">${e.minute != null ? e.minute + "'" : ""}</span>${code(e.team)}
+        <span class="grow"><span style="font-weight:600">${KINDS[e.kind]}</span>${e.player ? ` <span class="faint">#${esc(e.player)}</span>` : ""}</span>
+        <span class="chip ${cls}">${lab}${e.confirms ? ` · ${e.confirms}✓` : ""}${e.disputes ? ` · ${e.disputes}✗` : ""}</span>
+        ${v && e.ts != null ? `<div class="pbp-act"><button class="link" data-x="watch|${e.ts}|${esc(v.provider)}|${esc(v.url || "")}">▶ Watch at ${clock(e.ts)}</button>
+          ${e.mine ? `<span class="xs faint">Your entry</span>` : `<button class="mini" data-x="vote|${e.id}|confirm" aria-pressed="${PRO.get().votes[e.id] === "confirm"}">Confirm</button><button class="mini" data-x="vote|${e.id}|dispute" aria-pressed="${PRO.get().votes[e.id] === "dispute"}">Dispute</button>`}</div>` : ""}
+      </div>`; }).join("") : `<div class="panel-body"><p class="muted sm">No stats for this game yet. Be the first to add them.</p></div>`}</div>
+
+    <div class="section-h"><h2>Add a stat</h2></div>
+    <div class="panel panel-body" id="stat-form">
+      <div class="seg" role="group" aria-label="Team">${[g.a, g.b].map((t) => `<button type="button" data-x="draftteam|${t}" aria-pressed="${draftTeam === t}">${esc(T[t].name)}</button>`).join("")}</div>
+      <div class="grid2">
+        <div class="field"><label for="st-min">Game minute</label><input id="st-min" name="st-min" inputmode="numeric" placeholder="34"></div>
+        <div class="field"><label for="st-pl">Jersey # (optional)</label><input id="st-pl" name="st-pl" placeholder="9"></div>
+      </div>
+      ${vids.length ? `<div class="grid2">
+        <div class="field"><label for="st-vid">Proof video</label><select id="st-vid" name="st-vid"><option value="">No video</option>${vids.map((v, i) => `<option value="${v.id}" ${i === 0 ? "selected" : ""}>Video ${i + 1} · ${esc(v.provider)}</option>`).join("")}</select></div>
+        <div class="field"><label for="st-ts">Time in video</label><input id="st-ts" name="st-ts" placeholder="34:12"></div></div>`
+        : `<p class="xs faint">Add a game video below to attach proof to each stat.</p>`}
+      <div class="statgrid">${Object.entries(KINDS).map(([k, l]) => `<button type="button" class="statbtn" data-x="addstat|${k}|${d.key}">${l}</button>`).join("")}</div>
+      <p class="err" id="st-err" hidden></p>
+    </div>
+
+    <div class="section-h"><h2>Game video</h2></div>
+    <div class="panel panel-body">
+      ${vids.map((v, i) => `<div class="row between sm"><span>Video ${i + 1} · <b>${esc(v.provider)}</b>${v.example ? ` <span class="faint">(example)</span>` : ""}</span><span class="faint xs">Kickoff at ${clock(v.kick)}</span></div>`).join("")}
+      <div class="field"><label for="vid-url">Paste a Veo, Trace, Hudl or YouTube link</label><input id="vid-url" inputmode="url" placeholder="https://app.veo.co/matches/…"></div>
+      <div class="grid2">
+        <div class="field"><label for="vid-kick">Kickoff happens at</label><input id="vid-kick" value="0:00"></div>
+        <div class="field"><label for="vid-file">Or upload a file</label><input id="vid-file" type="file" accept="video/*"></div>
+      </div>
+      <button type="button" class="btn" data-x="addvid|${d.key}">Add video</button>
+    </div>
+
+    <div class="section-h"><h2>Possession</h2></div>
+    <div class="panel panel-body">
+      <p class="xs faint">Tap whoever has the ball. Tap Pause when it's out of play.</p>
+      <div class="grid2">
+        <button type="button" class="statbtn" id="pt-a" data-x="ptrack|a">${esc(T[g.a].code)} · <span id="pt-a-t">0:00</span></button>
+        <button type="button" class="statbtn" id="pt-b" data-x="ptrack|b">${esc(T[g.b].code)} · <span id="pt-b-t">0:00</span></button>
+      </div>
+      <div class="pbar"><i id="pt-bar" style="width:50%"></i></div>
+      <div class="grid2"><button type="button" class="btn" data-x="ptrack|pause">Pause</button><button type="button" class="btn primary" data-x="psave|${d.key}|${g.a}" id="pt-save">Save</button></div>
+      <div class="or">or from Veo Analytics</div>
+      <div class="grid2">
+        <div class="field"><label for="pv-pct">${esc(T[g.a].code)} possession %</label><input id="pv-pct" inputmode="decimal" placeholder="54"></div>
+        <div class="field"><label for="pv-src">Source</label><select id="pv-src"><option>Veo Analytics</option><option>Trace</option><option>Other</option></select></div>
+      </div>
+      <button type="button" class="btn" data-x="pvsave|${d.key}|${g.a}">Save possession</button>
+    </div>
+  </section>`;
+}
+
+function ProScreen() {
+  const st = PRO.get(), left = FOUNDER_TOTAL - (st.founder ? 1 : 0);
+  const plans = [
+    ["yearly", "Pro Yearly", "$29", "/year", "About $2.42 a month. Best value."],
+    ["monthly", "Pro Monthly", "$3", "/month", "Cancel anytime."],
+    ["team", "Team Plan", "$99", "/year", "One payment covers up to 25 families, about $4 each. You get a code to share."],
+  ];
+  return `<section class="screen">
+    ${st.pro ? `<div class="notice info"><b>You have Pro${st.founder ? ` · founding member #${st.founder}` : ""}.</b> ${st.founder ? "Free until " + day(new Date(Date.now() + 365 * 864e5).toISOString().slice(0, 10), { month: "long", day: "numeric", year: "numeric" }) + ". " : ""}Open any result to see and add game stats.</div>` : ""}
+    <div class="founder">
+      <div class="f-k">Founding families</div>
+      <h2 class="f-h">First 100 get Pro free for a year</h2>
+      <p class="f-p">No card needed. After 12 months it's $3/month or $29/year, only if you choose to keep it.</p>
+      <div class="f-m"><i style="width:${((FOUNDER_TOTAL - left) / FOUNDER_TOTAL) * 100}%"></i></div>
+      <p class="f-c">${left} of ${FOUNDER_TOTAL} spots left</p>
+      <button class="btn f-btn" data-x="claim" ${st.pro ? "disabled" : ""}>${st.founder ? "Spot claimed" : st.pro ? "You already have Pro" : "Claim my free year"}</button>
+    </div>
+    <div class="panel panel-body">
+      <h2 class="disp" style="font-size:20px">What Pro adds</h2>
+      <ul class="ticks">
+        <li>Team stats: goals, shots, saves, possession, PKs made and missed</li>
+        <li>Video proof from Veo, Trace, Hudl or your phone, confirmed by other parents</li>
+        <li>Live possession tracker on the sideline</li>
+        <li>Follow unlimited teams</li>
+      </ul>
+      <p class="xs faint">Free forever: rankings, schedules, scores, forecasts and weather.</p>
+    </div>
+    ${plans.map(([id, name, price, per, blurb]) => `<div class="plan ${id === "yearly" ? "best" : ""}">
+      <div class="row between"><h2 class="disp" style="font-size:20px">${name}</h2>${id === "yearly" ? `<span class="chip ok">Best value</span>` : ""}</div>
+      <div class="price">${price}<small>${per}</small></div>
+      <p class="sm muted">${blurb}</p>
+      <button class="btn ${id === "yearly" ? "primary" : ""}" data-x="buy|${id}">${id === "team" ? "Buy for my team" : st.pro ? "Lock in this plan" : "Subscribe"}</button>
+      ${id === "team" && st.teamCode ? `<div class="code-box"><span class="xs muted">Share this code with your team's families</span><b>${st.teamCode}</b></div>` : ""}
+    </div>`).join("")}
+    <div class="panel panel-body">
+      <h2 class="disp" style="font-size:20px">Have a team code?</h2>
+      <div class="field"><label for="join-code">Team plan code</label><input id="join-code" placeholder="8 letters and numbers" autocapitalize="characters"></div>
+      <button class="btn" data-x="join">Join team plan</button>
+    </div>
+    ${st.pro ? `<button class="btn" data-x="reset">Reset this preview</button>` : ""}
+    <p class="xs faint">Preview only: no card is charged. In the live app, payments go through Stripe and plans renew until cancelled.</p>
+  </section>`;
+}
+
+// ---- interactions for the Pro screens ----
+let ptState = { holder: null, a: 0, b: 0, last: 0, timer: null };
+function ptTick() {
+  const now = Date.now();
+  if (ptState.holder) ptState[ptState.holder] += (now - ptState.last) / 1000;
+  ptState.last = now;
+  const tot = ptState.a + ptState.b, pct = tot ? (ptState.a / tot) * 100 : 50;
+  const A = $("pt-a-t"), B = $("pt-b-t"), bar = $("pt-bar"), save = $("pt-save");
+  if (!A) { clearInterval(ptState.timer); ptState.timer = null; return; }
+  A.textContent = clock(ptState.a); B.textContent = clock(ptState.b); bar.style.width = pct + "%";
+  save.textContent = tot ? `Save ${Math.round(pct)}%` : "Save";
+  $("pt-a").classList.toggle("on", ptState.holder === "a"); $("pt-b").classList.toggle("on", ptState.holder === "b");
+}
+function setPoss(key, a, pct, source) {
+  const st = PRO.get(); PRO.set({ poss: { ...st.poss, [key]: { a, pct: Math.max(0, Math.min(100, pct)), source } } });
+}
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-x]"); if (!el) return;
+  const [act, p1, p2, p3] = el.dataset.x.split("|"), st = PRO.get();
+  if (act === "gopro") return setTab("pro");
+  if (act === "stats") return go({ type: "stats", a: p1, b: p2, date: p3 });
+  if (act === "claim") { PRO.set({ pro: true, founder: 1 }); toast("Welcome, founding member #1. Pro is free for a year."); return render(); }
+  if (act === "buy") {
+    if (p1 === "team") { PRO.set({ pro: true, plan: "team", teamCode: st.teamCode || ("TEAM" + hash(String(Date.now())).slice(0, 4)).toUpperCase() }); toast("Team plan active. Share the code with your team."); }
+    else { PRO.set({ pro: true, plan: p1 }); toast(`In the live app this opens Stripe checkout for ${p1 === "yearly" ? "$29/year" : "$3/month"}. Pro unlocked for this preview.`); }
+    return render();
+  }
+  if (act === "join") { const c = ($("join-code").value || "").trim().toUpperCase(); if (c.length < 6) return toast("Codes are 8 letters and numbers."); PRO.set({ pro: true, joined: true }); toast("Joined the team plan. Pro is unlocked."); return render(); }
+  if (act === "reset") { PRO.set({ pro: false, founder: null, plan: null, teamCode: null, joined: false, events: {}, videos: {}, poss: {}, votes: {} }); toast("Preview reset."); return render(); }
+  if (act === "draftteam") { PRO.set({ draftTeam: p1 }); document.querySelectorAll(`[data-x^="draftteam|"]`).forEach((b) => b.setAttribute("aria-pressed", b === el)); return; }
+  if (act === "watch") { return toast(p3 ? `Opening the ${p2} video at ${clock(+p1)}…` : `In the live app this opens the ${p2} game video at ${clock(+p1)}.`); }
+  if (act === "vote") { const cur = st.votes[p1]; PRO.set({ votes: { ...st.votes, [p1]: cur === p2 ? null : p2 } }); toast(cur === p2 ? "Vote removed." : p2 === "confirm" ? "Confirmed. Two confirms make a stat Verified." : "Disputed. The parent who entered it gets a note."); return render(); }
+  if (act === "addstat") {
+    const key = p2, err = $("st-err"), minRaw = $("st-min").value.trim(), tsRaw = $("st-ts")?.value.trim() ?? "", vid = $("st-vid")?.value ?? "";
+    const ts = tsRaw ? parseClockStr(tsRaw) : null;
+    if (tsRaw && ts == null) { err.textContent = "Video time looks like 34:12 (minutes:seconds)."; err.hidden = false; return; }
+    if (minRaw && !(+minRaw >= 0 && +minRaw <= 130)) { err.textContent = "Game minute is a number from 0 to 130."; err.hidden = false; return; }
+    const g = gameData(...key.split("@")[0].split("~"), key.split("@")[1]);
+    const team = st.draftTeam && [g.g.a, g.g.b].includes(st.draftTeam) ? st.draftTeam : current().a;
+    const v = g.videos.find((x) => x.id === vid);
+    const minute = minRaw ? +minRaw : v && ts != null && ts >= v.kick ? Math.min(130, Math.floor((ts - v.kick) / 60) + 1) : null;
+    const item = { id: key + "#u" + Date.now(), team, kind: p1, minute, player: $("st-pl").value.trim().slice(0, 4) || null, ts: vid && ts != null ? ts : null, video: vid && ts != null ? vid : null, confirms: 0, disputes: 0, mine: true };
+    PRO.set({ events: { ...st.events, [key]: [...(st.events[key] || []), item] } });
+    toast(`${KINDS[p1]} added for ${T[team].code}${item.video ? " with video proof" : ""}.`);
+    return render();
+  }
+  if (act === "addvid") {
+    const key = p1, url = $("vid-url").value.trim(), file = $("vid-file").files?.[0], kick = parseClockStr($("vid-kick").value || "0");
+    if (!url && !file) return toast("Paste a link or choose a video file.");
+    if (url && !/^https:\/\//i.test(url)) return toast("Links start with https://");
+    if (kick == null) return toast("Kickoff time looks like 2:15.");
+    let provider = "Upload";
+    if (url) { try { const h = new URL(url).hostname; provider = /veo\.co/.test(h) ? "Veo" : /traceup/.test(h) ? "Trace" : /hudl/.test(h) ? "Hudl" : /youtu/.test(h) ? "YouTube" : "Link"; } catch { return toast("That link doesn't look right."); } }
+    const list = st.videos[key] || [];
+    PRO.set({ videos: { ...st.videos, [key]: [...list, { id: "u" + Date.now(), provider, url: url || null, kick, example: false }] } });
+    toast(`${provider} video added${file ? ` (${file.name})` : ""}.`);
+    return render();
+  }
+  if (act === "ptrack") {
+    ptState.holder = p1 === "pause" ? null : p1; ptState.last = Date.now();
+    if (!ptState.timer) ptState.timer = setInterval(ptTick, 250);
+    return ptTick();
+  }
+  if (act === "psave") {
+    const tot = ptState.a + ptState.b; if (tot < 5) return toast("Track at least a few seconds first.");
+    setPoss(p1, p2, (ptState.a / tot) * 100, "In-app tracker"); ptState = { holder: null, a: 0, b: 0, last: 0, timer: ptState.timer };
+    toast("Possession saved."); return render();
+  }
+  if (act === "pvsave") { const v = +$("pv-pct").value; if (!(v >= 0 && v <= 100)) return toast("Enter a percentage from 0 to 100."); setPoss(p1, p2, v, $("pv-src").value); toast("Possession saved."); return render(); }
+});
+
+function render() {
+  const s = store.get(), v = current();
+  const titles = { team: "Team", match: "Match preview", event: "Competition", score: "Live scoreboard", player: "Player", addplayer: "New player", about: "About", stats: "Game stats", addgame: "New game" };
+  $("appbar").innerHTML = v
+    ? `<button class="back" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>Back</button><span class="context" style="border:0">${titles[v.type] ?? ""}</span>`
+    : `<span class="wordmark">${MARK}<span class="wm-t"><small>Youth Soccer</small><b>Rankings</b></span></span><button class="context" data-tab="rankings" aria-label="Change filters">U12 ${s.gender === "girls" ? "Girls" : "Boys"} · ${scopeLabel()}</button>`;
+  const html = v ? ({ team: () => Team(v.id), match: () => Match(v.a, v.b, v.date), event: () => EventScreen(v.id), score: () => Scorekeeper(v.id), player: () => PlayerScreen(v.id), addplayer: AddPlayer, about: About, addgame: AddGame, stats: () => GameStats(v.a, v.b, v.date) })[v.type]()
+    : ({ rankings: Rankings, forecast: Forecast, live: Live, players: Players, pro: ProScreen })[s.tab]?.() ?? Home();
+  $("app").innerHTML = html;
+  document.querySelectorAll(".tab").forEach((b) => b.setAttribute("aria-current", b.dataset.tab === s.tab ? "page" : "false"));
+  $("live-badge").hidden = !liveList().some((x) => x.status !== "final");
+}
+function safeRender() {
+  const a = document.activeElement;
+  if (a && a.closest && a.closest("form") && ["INPUT", "SELECT"].includes(a.tagName)) { pendingRender = true; return; }
+  render();
+}
+let pendingRender = false;
+document.addEventListener("focusout", () => { if (pendingRender) { pendingRender = false; setTimeout(render, 0); } });
+
+$("mobile-note").textContent = IN_APP ? `Built-in results through ${short(D.resultsThrough)}, plus games added by parents and coaches. Rankings, odds and forecasts are calculated by this app.` : `Preview with real U12 girls results through ${short(D.resultsThrough)}. Rankings, odds and forecasts are calculated by this app.`;
+if (IN_APP) $("notes").hidden = true;
+$("notes").innerHTML = `<h2>Youth Soccer Rankings preview</h2>
+  <p>Every score is a real U12 girls game from ${short(D.resultsFrom)} to ${short(D.resultsThrough)}. Rankings, odds and forecasts come from this app's own model.</p>
+  <ul><li><b>Forecast</b>: pick an opponent and a final score to see how far your rank would move, and the margin you need to gain.</li>
+  <li><b>Live</b>: keep score from the sideline. Everyone viewing sees it update, and the final feeds the rankings.</li>
+  <li><b>Players</b>: add players and game stats for a player leaderboard.</li>
+  <li><b>Pro</b>: open any result for goals, saves, shots, PKs and possession, each linked to the moment in the game video (Veo, Trace, Hudl or phone) and confirmed by other parents. The Pro tab shows the founder offer and plans.</li>
+  <li><b>Filters</b>: girls or boys, state or national, from the Rankings tab or the pill at the top.</li></ul>`;
+
+// ================= events =================
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("button, tr.click"); if (!el) return;
+  const d = el.dataset;
+  if (d.tab) return setTab(d.tab);
+  if ("back" in d) return back();
+  if (d.set) { const p = JSON.parse(d.set); store.set(p); return render(); }
+  if (d.team) return go({ type: "team", id: d.team });
+  if (d.match) { const [a, b, date] = d.match.split("|"); return go({ type: "match", a, b, date }); }
+  if (d.event) return go({ type: "event", id: d.event });
+  if (d.forecast !== undefined) { const [a, b] = d.forecast.split("|"); store.set({ fa: a, fb: b || null }); return setTab("forecast"); }
+  if (d.step) { const [k, n] = d.step.split("|"); const s = store.get(); store.set({ [k]: Math.max(0, Math.min(15, s[k] + Number(n))) }); return render(); }
+  if (d.score) return go({ type: "score", id: d.score });
+  if ("addgame" in d) { draft = {}; return go({ type: "addgame" }); }
+  if (d.confirm) return void confirmFinal(d.confirm);
+  if (d.live) { const [k, id] = d.live.split("|"); return void liveAction(k, id); }
+  if ("about" in d) return go({ type: "about" });
+  if ("report" in d) { $("report-msg").hidden = false; return; }
+  if ("addplayer" in d) { draft = {}; return go({ type: "addplayer" }); }
+  if (d.player) { draft = {}; return go({ type: "player", id: d.player }); }
+  if (d.delplayer) { $("del-btn").hidden = true; $("del-confirm").hidden = false; return; }
+  if ("delcancel" in d) { $("del-btn").hidden = false; $("del-confirm").hidden = true; return; }
+  if (d.delyes) { const s = PL.get(); s.players = s.players.filter((p) => p.id !== d.delyes); s.lines = s.lines.filter((l) => l.playerId !== d.delyes); PL.save(); toast("Player removed."); return back(); }
+  if ("clearlive" in d) { $("clear-confirm").hidden = false; el.hidden = true; return; }
+  if ("clearcancel" in d) { $("clear-confirm").hidden = true; document.querySelector("[data-clearlive]").hidden = false; return; }
+  if ("clearyes" in d) { void clearLive(); return; }
+  if (d.follow) { const s = store.get(), id = d.follow; if (s.mine === id) return; store.set({ watch: s.watch.includes(id) ? s.watch.filter((x) => x !== id) : [...s.watch, id] }); return render(); }
+});
+document.addEventListener("change", (e) => {
+  const id = e.target.id;
+  if (id === "fa" || id === "fb") { store.set({ [id]: e.target.value }); return render(); }
+  if (id === "f-state") { store.set({ state: e.target.value }); return render(); }
+  if (e.target.form) draft[e.target.name] = e.target.value;
+});
+document.addEventListener("input", (e) => { if (e.target.form) draft[e.target.name] = e.target.value; });
+document.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const fd = new FormData(e.target), err = (id, msg) => { const n = $(id); n.textContent = msg; n.hidden = false; };
+  if (e.target.id === "add-game") return void addGame(fd, err);
+  if (e.target.id === "add-player") {
+    const first = String(fd.get("first")).trim(), initial = String(fd.get("initial")).trim(), jersey = String(fd.get("jersey")).trim();
+    if (!/^[\p{L}' -]{1,30}$/u.test(first)) return err("p-err", "Enter a first name (letters only).");
+    if (!/^\p{L}$/u.test(initial)) return err("p-err", "Enter one letter for the last initial.");
+    if (jersey && !/^\d{1,2}$/.test(jersey)) return err("p-err", "Jersey number should be 0–99.");
+    const s = PL.get(), p = { id: "p" + Date.now().toString(36), teamId: String(fd.get("team")), first, initial: initial.toUpperCase(), jersey: jersey ? Number(jersey) : null, pos: String(fd.get("pos")) };
+    s.players.push(p); PL.save(); draft = {}; stack.pop(); toast(`${dispName(p)} added. Now log a game.`); return go({ type: "player", id: p.id });
+  }
+  if (e.target.id === "add-stats") {
+    const pid = e.target.dataset.pid, s = PL.get(), p = s.players.find((x) => x.id === pid);
+    const games = gamesFor(p.teamId).filter((g) => !s.lines.some((l) => l.playerId === pid && l.date === g.date && l.opp === g.opp));
+    const g = games[Number(fd.get("game"))], n = (k, max) => { const v = String(fd.get(k) ?? "0").trim(); return /^\d{1,3}$/.test(v) && Number(v) <= max ? Number(v) : null; };
+    const minutes = n("minutes", 100); if (minutes == null) return err("s-err", "Minutes should be 0–100.");
+    const line = { playerId: pid, opp: g.opp, date: g.date, minutes, goals: 0, assists: 0, saves: null, conceded: null };
+    if (p.pos === "GK") { line.saves = n("saves", 40); line.conceded = n("conceded", 30); if (line.saves == null || line.conceded == null) return err("s-err", "Saves and goals allowed should be whole numbers."); }
+    else { line.goals = n("goals", 20); line.assists = n("assists", 20); if (line.goals == null || line.assists == null) return err("s-err", "Goals and assists should be whole numbers."); if (line.goals > g.gf) return err("s-err", `The team only scored ${g.gf} in that game.`); }
+    s.lines.push(line); PL.save(); draft = {}; toast("Stats saved."); return render();
+  }
+});
+async function clearLive() {
+  const ids = Object.keys(live); live = {}; recompute(); render(); toast("Live scores cleared.");
+  if (liveMode === "shared") { for (const id of ids) { try { await db.doc("live/" + id).delete(); } catch {} } }
+  else { try { localStorage.setItem("uf-live-local", "{}"); } catch {} }
+}
+
+// ================= live sync =================
+render();
+setInterval(() => { const v = current(); if ((v?.type === "score" || (!v && ["live", "home"].includes(store.get().tab))) && liveList().some((x) => x.status === "live")) safeRender(); }, 30000);
+(async () => {
+  try {
+    db = window.claude?.use ? await window.claude.use("db") : null;
+    const user = db && window.claude?.use ? await window.claude.use("user") : null;
+    if (user) { try { const c = await user.can("data.write"); canWrite = c === null ? null : !!c; } catch { canWrite = null; } }
+  } catch { db = null; }
+  if (!db) { liveMode = "local"; safeRender(); return; }
+  liveMode = "shared"; live = {};
+  db.collection("live").onSnapshot((snap) => {
+    const next = {}; snap.docs.forEach((d) => { if (d.exists) next[d.id] = d.data(); });
+    live = withPend("live", next); recompute(); safeRender();
+  }, () => { liveMode = "local"; try { live = JSON.parse(localStorage.getItem("uf-live-local") || "{}"); } catch { live = {}; } recompute(); safeRender(); });
+  const sub = (name, apply) => db.collection(name).onSnapshot((snap) => {
+    const next = {}; snap.docs.forEach((d) => { if (d.exists) next[d.id] = d.data(); });
+    apply(next); applyCrowd(); recompute(); safeRender();
+  }, () => {});
+  sub("teams", (n) => { userTeams = withPend("teams", n); }); sub("fixtures", (n) => { userFx = withPend("fixtures", n); }); sub("confirms", (n) => { confirms = withPend("confirms", n); });
+})();
+// licensed data feed (config.js feedUrl): same shape as the built-in data
+(window.YSR_FEED || Promise.resolve(null)).then((feed) => {
+  if (!feed || typeof feed !== "object") return;
+  Object.assign(EV, feed.events || {});
+  for (const t of Object.values(feed.teams || {})) if (t?.id && t.name && !T[t.id]) T[t.id] = { focus: false, history: [], age: "U12", state: "CA", gender: "girls", code: t.name.replace(/[^A-Za-z]/g, "").slice(0, 3).toUpperCase(), ...t };
+  const have = new Set(D.games.map(pairKey));
+  for (const g of feed.games || []) if (T[g.a] && T[g.b] && Number.isInteger(g.ga) && Number.isInteger(g.gb) && !have.has(pairKey(g))) { D.games.push(g); have.add(pairKey(g)); }
+  for (const f of feed.fixtures || []) if (T[f.a] && T[f.b] && /^\d{4}-\d\d-\d\d$/.test(f.date || "")) { const id = fxId(f); if (!D.fixtures.some((x) => x.id === id)) D.fixtures.push({ venue: null, time: null, ...f, id }); }
+  applyCrowd(); recompute(); safeRender();
+});
+// offline support when installed
+if ("serviceWorker" in navigator && location.protocol === "https:" && IN_APP) navigator.serviceWorker.register("sw.js").catch(() => {});
+</script>
+
+</body></html>
