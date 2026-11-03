@@ -1,5 +1,5 @@
 // Offline shell: the app opens with no signal (common at fields); live data still needs a connection.
-const CACHE = "ysr-v2";
+const CACHE = "ysr-v3";
 const SHELL = ["./", "./index.html", "./config.js", "./backend.js", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png"];
 
 self.addEventListener("install", (e) => {
